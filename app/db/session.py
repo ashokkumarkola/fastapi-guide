@@ -3,6 +3,9 @@ from sqlalchemy.orm import sessionmaker, Session, declarative_base
 # from typing import Generator
 # from sqlalchemy.ext.asyncio import create_engine, session # create_async_engine, AsyncSession
 
+from app.db.base import Base
+from app.core.logger import logger
+
 # SQLALCHEMY_DATABASE_URL
 # DATABASE_URL = "sqlite:///./blog.db"
 DATABASE_URL = "sqlite:///./data/blog.db"
@@ -41,12 +44,9 @@ SessionLocal = sessionmaker(
     # pass
 
 # ============ INIT DB ============ #
-def init_db(products: list[dict]):
-    db = SessionLocal()
-    try:
-        pass
-    finally:
-        db.clos()
+def init_db():
+    logger.info("Initializing database...")
+    Base.metadata.create_all(bind=engine)
 
 # ============ GET DB ============ #
 def get_db(): # -> Generator[Session, None, None]:

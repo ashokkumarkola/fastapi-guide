@@ -12,6 +12,12 @@ cd fastapi-guide
 ```bash
 python3 -m venv venv
 source venv/bin/activate
+
+# Add .gitignore
+echo "*" > .venv/.gitignore
+
+# Deactivate the Virtual Environment
+deactivate
 ```
 
 ---

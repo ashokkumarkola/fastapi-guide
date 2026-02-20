@@ -1,7 +1,7 @@
 
 from sqlalchemy.orm import Session
 
-from app.models import User
+from app.all_models import User
 # from api.schemas.user import User
 
 class UserDAO:

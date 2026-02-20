@@ -42,6 +42,10 @@ class UserResponse(BaseModel):
     class Config:
         orm_mode = True
 
+    # model_config = {
+    #     'from_attributes': True
+    # }
+
 # runtime import (important)
 # from api.schemas.blog import BlogResponse
 

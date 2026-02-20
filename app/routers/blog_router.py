@@ -29,7 +29,10 @@ def get_blog(blog_id: int, db: Session = Depends(get_db)):
 
 # List Blogs
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[BlogResponse])
-def get_blogs(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_blogs(
+    db: Session = Depends(get_db), 
+    # current_user: User = Depends(get_current_user)
+):
     return BlogService.list_blogs(db)
 
 # Update Blog
@@ -38,7 +41,7 @@ def update_blog(
     blog_id: int, 
     updates: BlogUpdate, 
     db: Session = Depends(get_db), 
-    current_user: User = Depends(get_current_user)
+    # current_user: User = Depends(get_current_user)
 ):
     blog = BlogService.update_blog(db, blog_id, updates)
     if not blog:

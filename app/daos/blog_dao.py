@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..models import Blog # ORM Model
+from app.models.blog import Blog # ORM Model
 
 class BlogDAO:
     """Data Access Object (DAO) pattern - SQLAlchemy specific operations"""
