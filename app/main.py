@@ -6,12 +6,14 @@ from app.db.base import Base
 
 from app.routers.blog_router import router as blog_router
 from app.routers.user_router import router as user_router
-# from app.routers.auth_router import router as auth_router
+from app.routers.auth_router import router as auth_router
+from app.routers.item_router import router as item_router
 # from app.routers.books_router import router as book_router
 
 from app.core.middleware import RequestLoggingMiddleware
 from app.core.lifespan import lifespan
 from app.core.logger import logger
+from app.core.config import get_settings
 
 # from contextlib import asynccontextmanager
 # from app.db.async_db.async_session import init_db
@@ -20,15 +22,19 @@ from app.core.logger import logger
 # import api.models
 from app import models
 
+settings = get_settings()
 
 # ======================== APP ======================== #
-version = "v1"
 app = FastAPI(
     lifespan=lifespan,
 
-    title="FastAPIGuide",
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
     description="A Complete Guide on FastAPI",
-    version=version
+
+    # openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    # docs_url="/docs" if settings.ENVIRONMENT == "development" else None,
+    # redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None,
 )
 
 # def create_app() -> FastAPI:
@@ -72,7 +78,7 @@ async def lifespan(app: FastAPI):
 
 
 # ======================= MIDDLEWARES ======================= #
-app.add_middleware(RequestLoggingMiddleware)
+# app.add_middleware(RequestLoggingMiddleware)
 
 # ======================= APIs ======================= #
 @app.get("/")
@@ -107,7 +113,55 @@ def read_root():
 app.include_router(blog_router)
 app.include_router(user_router)
 # app.include_router(auth_router)
+app.include_router(item_router)
 # app.include_router(book_router, prefix=f"/api/{version}/books")
+
+# ======================= * ======================= #
+# def create_application() -> FastAPI:
+#     """Application factory pattern"""
+#     application = FastAPI(
+#         title=settings.PROJECT_NAME,
+#         version=settings.VERSION,
+#         openapi_url=f"{settings.API_V1_STR}/openapi.json",
+#         docs_url="/docs" if settings.ENVIRONMENT == "development" else None,
+#         redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None,
+#     )
+    
+#     # Set up CORS
+#     application.add_middleware(
+#         CORSMiddleware,
+#         allow_origins=["*"] if settings.ENVIRONMENT == "development" else ["your-production-domain.com"],
+#         allow_credentials=True,
+#         allow_methods=["*"],
+#         allow_headers=["*"],
+#     )
+    
+#     # Add security headers
+#     application.add_middleware(
+#         TrustedHostMiddleware,
+#         allowed_hosts=["*"] if settings.ENVIRONMENT == "development" else ["your-domain.com"]
+#     )
+    
+#     # Include routers
+#     application.include_router(auth.router, prefix=settings.API_V1_STR)
+#     application.include_router(items.router, prefix=settings.API_V1_STR)
+    
+#     @application.get("/")
+#     async def root():
+#         return {
+#             "message": f"Welcome to {settings.PROJECT_NAME}",
+#             "version": settings.VERSION,
+#             "docs": "/docs",
+#             "environment": settings.ENVIRONMENT
+#         }
+    
+#     @application.get("/health")
+#     async def health_check():
+#         return {"status": "healthy"}
+    
+#     return application
+
+# app = create_application()
 
 # Debugging
 # if __name__ == '__main__':

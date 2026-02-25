@@ -1,33 +1,32 @@
-# from pydantic import BaseSettings
-from pydantic_settings import BaseSettings, SettingsConfigDict
+# # from pydantic import BaseSettings
+# from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# class Settings(BaseSettings):
+#     # model_config = SettingsConfigDict(env_file=".env", env_ignore_empty=True, extra="ignore")
 
+#     PROJECT_NAME: str = "My FastAPI Guide"
+#     VERSION: str = "1.0.0"
+#     ENV: str = "dev"
+#     HOST: str = "0.0.0.0"
+#     PORT: int = 8000
 
-class Settings(BaseSettings):
-    # model_config = SettingsConfigDict(env_file=".env", env_ignore_empty=True, extra="ignore")
+#     ENVIRONMENT: str = "development"
+#     DEBUG: bool = True
+#     APP_NAME: str = "FastAPI Guide"
+#     SECRET_KEY: str
+#     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
-    PROJECT_NAME: str = "MyFastAPIApp"
-    ENV: str = "dev"
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
+#     DATABASE_URL: str
 
-    ENVIRONMENT: str = "development"
-    DEBUG: bool = True
-    APP_NAME: str = "My Awesome API"
-    SECRET_KEY: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+#     # Sentry, Redis, etc.
+#     SENTRY_DSN: str | None = None
 
-    DATABASE_URL: str
+#     model_config = SettingsConfigDict(
+#         env_file='.env',
+#         extra='ignore'
+#     )
 
-    # Sentry, Redis, etc.
-    SENTRY_DSN: str | None = None
+#     class Config:
+#         env_file = ".env"
 
-    model_config = SettingsConfigDict(
-        env_file='.env',
-        extra='ignore'
-    )
-
-    class Config:
-        env_file = ".env"
-
-settings = Settings() # type: ignore
+# settings = Settings() # type: ignore

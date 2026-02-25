@@ -48,6 +48,10 @@ Authorization
 Input Validation
 rate Limiting
 
+API versioning
+Async workers
+Audit logs
+
 Performance
 Caching strategies
 pagination

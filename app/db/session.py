@@ -8,7 +8,8 @@ from app.core.logger import logger
 
 # SQLALCHEMY_DATABASE_URL
 # DATABASE_URL = "sqlite:///./blog.db"
-DATABASE_URL = "sqlite:///./data/blog.db"
+# DATABASE_URL = "sqlite:///./data/blog.db"
+DATABASE_URL = "sqlite:///./database/fastapi_guide.db"
 # postgresql+psycopg2://user:password@localhost/db
 
 # database type/driver → username : password → database host → PostgreSQL port (default) → database name
@@ -20,6 +21,7 @@ engine = create_engine(
     # max_overflow=10,
     # pool_timeout=30,
     connect_args={"check_same_thread": False},  # needed only for SQLite
+    echo=True
 )
 
 # ============ SESSION LOCAL ============ #

@@ -23,7 +23,7 @@ class BlogBase(BaseModel):
 
 class Blog(BlogBase):
     class Config:
-        orm_mode = True
+        from_attributes = True   
 
 class BlogCreate(BaseModel):
     title: str
@@ -43,7 +43,7 @@ class BlogResponse(BlogCreate):
 
     # SQLAlchemy -> Pydantic
     class Config:
-        orm_mode = True
+        from_attributes = True         
 
 # runtime import (important)
 # from api.schemas.user import UserResponse

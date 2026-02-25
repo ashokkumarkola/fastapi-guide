@@ -1,0 +1,122 @@
+[
+  {
+    "email": "aarav.sharma@gmail.com",
+    "username": "aaravsharma",
+    "full_name": "Aarav Sharma",
+    "password": "Pass@1234"
+  },
+  {
+    "email": "isha.reddy@yahoo.com",
+    "username": "ishareddy",
+    "full_name": "Isha Reddy",
+    "password": "Isha@2024"
+  },
+  {
+    "email": "rahul.verma@outlook.com",
+    "username": "rahulv",
+    "full_name": "Rahul Verma",
+    "password": "Rahul#5678"
+  },
+  {
+    "email": "ananya.iyer@gmail.com",
+    "username": "ananyaiyer",
+    "full_name": "Ananya Iyer",
+    "password": "Ananya@321"
+  },
+  {
+    "email": "vikram.singh@gmail.com",
+    "username": "vikrams",
+    "full_name": "Vikram Singh",
+    "password": "Vikram@789"
+  },
+  {
+    "email": "pooja.patel@yahoo.com",
+    "username": "poojapatel",
+    "full_name": "Pooja Patel",
+    "password": "Pooja#123"
+  },
+  {
+    "email": "arjun.nair@gmail.com",
+    "username": "arjunnair",
+    "full_name": "Arjun Nair",
+    "password": "Arjun@456"
+  },
+  {
+    "email": "meera.kapoor@outlook.com",
+    "username": "meerakapoor",
+    "full_name": "Meera Kapoor",
+    "password": "Meera@2025"
+  },
+  {
+    "email": "rohit.gupta@gmail.com",
+    "username": "rohitgupta",
+    "full_name": "Rohit Gupta",
+    "password": "Rohit#9090"
+  },
+  {
+    "email": "kavya.menon@gmail.com",
+    "username": "kavyamenon",
+    "full_name": "Kavya Menon",
+    "password": "Kavya@555"
+  },
+  {
+    "email": "siddharth.jain@yahoo.com",
+    "username": "sidjain",
+    "full_name": "Siddharth Jain",
+    "password": "Sid@8888"
+  },
+  {
+    "email": "neha.chopra@gmail.com",
+    "username": "nehachopra",
+    "full_name": "Neha Chopra",
+    "password": "Neha#2023"
+  },
+  {
+    "email": "manish.yadav@gmail.com",
+    "username": "manishy",
+    "full_name": "Manish Yadav",
+    "password": "Manish@111"
+  },
+  {
+    "email": "divya.shah@outlook.com",
+    "username": "divyashah",
+    "full_name": "Divya Shah",
+    "password": "Divya@444"
+  },
+  {
+    "email": "karan.malhotra@gmail.com",
+    "username": "karanmalhotra",
+    "full_name": "Karan Malhotra",
+    "password": "Karan#777"
+  },
+  {
+    "email": "shruti.desai@yahoo.com",
+    "username": "shrutidesai",
+    "full_name": "Shruti Desai",
+    "password": "Shruti@909"
+  },
+  {
+    "email": "aditya.kulkarni@gmail.com",
+    "username": "adityakulkarni",
+    "full_name": "Aditya Kulkarni",
+    "password": "Adi@2022"
+  },
+  {
+    "email": "nisha.bansal@gmail.com",
+    "username": "nishabansal",
+    "full_name": "Nisha Bansal",
+    "password": "Nisha#654"
+  },
+  {
+    "email": "rakesh.chauhan@outlook.com",
+    "username": "rakeshchauhan",
+    "full_name": "Rakesh Chauhan",
+    "password": "Rakesh@333"
+  },
+  {
+    "email": "tanvi.agrawal@gmail.com",
+    "username": "tanviagrawal",
+    "full_name": "Tanvi Agrawal",
+    "password": "Tanvi@888"
+  }
+]

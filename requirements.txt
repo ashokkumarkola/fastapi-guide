@@ -12,7 +12,7 @@ uvicorn
 sqlmodel
 sqlalchemy
 asyncpg
-# alembic
+alembic
 
 # --------------------------
 # Authentication / Security

@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Header, Cookie
+from fastapi import FastAPI, Header, Cookie, Query
 from pydantic import BaseModel, Field # HttpUrl, PhoneNuber, EmailStr
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 
 from enum import Enum
 from uuid import UUID
@@ -10,7 +10,7 @@ class Image(BaseModel):
     # url: str
     
     # Special types
-    url: HttpUrl
+    # url: HttpUrl
 
     name: str
 
@@ -29,7 +29,7 @@ class Cookies(BaseModel):
     googall_tracker: str | None = None
 
 class Item(BaseModel):
-    name: str
+    title: str
     description: str | None = None
     price: float
     tax: float | None = None
@@ -55,7 +55,7 @@ class Item(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "name": "Foo",
+                    "title": "Foo",
                     "description": "A very nice Item",
                     "price": 35.4,
                     "tax": 3.2,
@@ -64,13 +64,27 @@ class Item(BaseModel):
         }
     }
 
+    # class Config:
+        # orm_mode = True # Deprecated
+        # from_attributes = True # Modern
+
+    # model_config = {
+    #     'from_attributes': True
+    # }
+
+    # PydanticUserError: "Config" and "model_config" cannot be used together
+
 class ItemBase(BaseModel):
     name: str
-    description: str | None = Field(default=None, title="The description of the item", max_length=300)
-    price: float = Field(gt=0, description="The price must be greater than zero")
-    tax: float | None = None
-    tags: set[str] = set()
-    images: list[Image] | None = None
+    description: str | None = None
+    price: float
+    # cost: float
+    quantity: int
+    # tax: float | None = None
+    category: str
+    # tags: set[str] = set()
+    image_url: str | None = None
+    # images: list[Image] | None = None
 
 class Offer(BaseModel):
     name: str
@@ -78,33 +92,28 @@ class Offer(BaseModel):
     price: float
     items: list[ItemBase]
 
-
-
-class ItemIn(BaseModel):
-    name: str
-
-class ItemOut(BaseModel):
-    name: str
-
-
-
-class UserBase(BaseModel):
-    username: str
-    email: str
-    full_name: str | None = None
-
-
-class UserIn(UserBase):
-    password: str
-
-
-class UserOut(UserBase):
+class ItemCreate(ItemBase):
     pass
 
+class ItemUpdate(BaseModel):
+    quantity: int | None = None
 
-class UserInDB(UserBase):
-    hashed_password: str
+class ItemResponse(ItemBase):
+    id: int
+    # owner_id: int
+    # image_url: str | None
+    class Config:
+        from_attributes = True  # For SQLAlchemy compatibility
 
+class ItemStats(BaseModel):
+    category: str
+    avg_price: float
+
+class ItemFilter(BaseModel):
+    pass
+    # category: str | None = Query(None, description="Filter by category"),
+    # min_price: float | None = Query(None, ge=0, description="Minimum price"),
+    # max_price: float | None = Query(None, gt=0, description="Maximum price"),
 
 # 
     # Editor support (completion, etc.), even for nested models

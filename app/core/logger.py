@@ -8,8 +8,10 @@ import logging
 
 # LOG_FILE = LOG_DIR / "app.log"
 
-# Approach 1
+
+# ======================== Approach 1 Logger ======================== #
 # Function-based logger | Manual Python configuration.
+
 def setup_logger():
 
     # ---- Disable uvicorn logs ----
@@ -65,8 +67,9 @@ def setup_logger():
 # Export Logger | Runs automatically when imported.
 logger = setup_logger()
 
-# Approach 2
+# ======================== Approach 2 Logger ======================== #
 # Configuration-driven logging (dictConfig) | standard logging system.
+
 # LOGGING_CONFIG = {
 #     "version": 1,
 #     "disable_existing_loggers": False,
@@ -96,10 +99,11 @@ logger = setup_logger()
 
 # logger = logging.getLogger("app")
 
-# logging.yaml
-# logging.json
-# env-based configs
 
+# ======================== Simple Logger ======================== #
+# import logging
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
 
 # Logging Levels
     # debug()	developer debugging
@@ -107,3 +111,7 @@ logger = setup_logger()
     # warning()	unexpected but ok
     # error()	failure occurred
     # critical()	system crash
+
+# logging.yaml
+# logging.json
+# env-based configs

@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Nespresso Vertuo Plus",
+    "description": "Automatic coffee machine with one-touch brewing system.",
+    "price": 179,
+    "quantity": 35,
+    "category": "Home Appliances",
+    "image_url": "https://www.nespresso.com/ecom/medias/sys_master/coffee-maker-vertuo-plus.jpg"
+  },
+  {
+    "name": "Samsung Galaxy S23",
+    "description": "Flagship smartphone with AMOLED display and advanced camera system.",
+    "price": 799,
+    "quantity": 50,
+    "category": "Electronics",
+    "image_url": "https://images.samsung.com/galaxy-s23.jpg"
+  },
+  {
+    "name": "Nike Air Zoom Pegasus 40",
+    "description": "Lightweight running shoes designed for comfort and performance.",
+    "price": 120,
+    "quantity": 120,
+    "category": "Footwear",
+    "image_url": "https://static.nike.com/air-zoom-pegasus-40.jpg"
+  },
+  {
+    "name": "Sony WH-1000XM5",
+    "description": "Wireless noise-cancelling headphones with premium sound quality.",
+    "price": 349,
+    "quantity": 75,
+    "category": "Electronics",
+    "image_url": "https://sony.com/images/wh-1000xm5.jpg"
+  },
+  {
+    "name": "IKEA Malm Bed Frame",
+    "description": "Minimalist queen-size bed frame with storage drawers.",
+    "price": 259,
+    "quantity": 20,
+    "category": "Furniture",
+    "image_url": "https://ikea.com/malm-bed-frame.jpg"
+  },
+  {
+    "name": "KitchenAid Artisan Mixer",
+    "description": "Stand mixer with multiple attachments for baking and cooking.",
+    "price": 429,
+    "quantity": 15,
+    "category": "Home Appliances",
+    "image_url": "https://kitchenaid.com/artisan-mixer.jpg"
+  },
+  {
+    "name": "Apple MacBook Air M2",
+    "description": "Lightweight laptop with Apple Silicon M2 chip.",
+    "price": 1199,
+    "quantity": 40,
+    "category": "Electronics",
+    "image_url": "https://apple.com/macbook-air-m2.jpg"
+  },
+  {
+    "name": "Adidas Ultraboost 22",
+    "description": "High-performance running shoes with responsive cushioning.",
+    "price": 180,
+    "quantity": 90,
+    "category": "Footwear",
+    "image_url": "https://adidas.com/ultraboost-22.jpg"
+  },
+  {
+    "name": "Dell XPS 13",
+    "description": "Compact laptop with InfinityEdge display.",
+    "price": 999,
+    "quantity": 25,
+    "category": "Electronics",
+    "image_url": "https://dell.com/xps-13.jpg"
+  },
+  {
+    "name": "Canon EOS R10",
+    "description": "Mirrorless camera with advanced autofocus system.",
+    "price": 979,
+    "quantity": 30,
+    "category": "Electronics",
+    "image_url": "https://canon.com/eos-r10.jpg"
+  },
+  {
+    "name": "Levi's 501 Original Jeans",
+    "description": "Classic straight-fit denim jeans.",
+    "price": 89,
+    "quantity": 200,
+    "category": "Clothing",
+    "image_url": "https://levis.com/501-original.jpg"
+  },
+  {
+    "name": "Bose SoundLink Revolve+",
+    "description": "Portable Bluetooth speaker with 360-degree sound.",
+    "price": 299,
+    "quantity": 60,
+    "category": "Electronics",
+    "image_url": "https://bose.com/soundlink-revolve-plus.jpg"
+  },
+  {
+    "name": "Dyson V15 Detect",
+    "description": "Cordless vacuum cleaner with laser dust detection.",
+    "price": 699,
+    "quantity": 18,
+    "category": "Home Appliances",
+    "image_url": "https://dyson.com/v15-detect.jpg"
+  },
+  {
+    "name": "LG OLED C2 TV",
+    "description": "55-inch OLED smart TV with Dolby Vision.",
+    "price": 1399,
+    "quantity": 12,
+    "category": "Electronics",
+    "image_url": "https://lg.com/oled-c2.jpg"
+  },
+  {
+    "name": "Timberland Classic Boots",
+    "description": "Durable leather boots for outdoor wear.",
+    "price": 150,
+    "quantity": 80,
+    "category": "Footwear",
+    "image_url": "https://timberland.com/classic-boots.jpg"
+  },
+  {
+    "name": "Philips Air Fryer XXL",
+    "description": "Large-capacity air fryer for healthy cooking.",
+    "price": 249,
+    "quantity": 22,
+    "category": "Home Appliances",
+    "image_url": "https://philips.com/airfryer-xxl.jpg"
+  },
+  {
+    "name": "HP Envy Printer 6055",
+    "description": "All-in-one wireless printer for home use.",
+    "price": 149,
+    "quantity": 45,
+    "category": "Electronics",
+    "image_url": "https://hp.com/envy-6055.jpg"
+  },
+  {
+    "name": "Ray-Ban Aviator Sunglasses",
+    "description": "Classic aviator sunglasses with UV protection.",
+    "price": 159,
+    "quantity": 70,
+    "category": "Accessories",
+    "image_url": "https://ray-ban.com/aviator.jpg"
+  },
+  {
+    "name": "Fitbit Charge 5",
+    "description": "Advanced fitness tracker with heart rate monitoring.",
+    "price": 179,
+    "quantity": 55,
+    "category": "Electronics",
+    "image_url": "https://fitbit.com/charge-5.jpg"
+  },
+  {
+    "name": "Puma RS-X Sneakers",
+    "description": "Retro-inspired sneakers with bold design.",
+    "price": 110,
+    "quantity": 95,
+    "category": "Footwear",
+    "image_url": "https://puma.com/rs-x.jpg"
+  }
+]
