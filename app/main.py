@@ -54,7 +54,8 @@ app = FastAPI(
 #     # print("App stopped")
 
 # ------------- asynccontextmanager -------------
-@asynccontextmanager
+# @asynccontextmanager
+@contextmanager
 async def lifespan(app: FastAPI):
 
     # startup

@@ -6,6 +6,12 @@ All models must inherit SAME Base
 Engine.create_all() uses Base.metadata
 """
 
+# Model file not imported
+#    = class not executed
+#    = table not registered
+#    = metadata empty
+#    = Alembic panic
+
 # ============ Declarative Base ============ #
 # ORM mapping layer → Legacy
 # Base = declarative_base() # Python classes ↔ Database tables.

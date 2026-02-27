@@ -53,5 +53,5 @@ def get_settings():
 
 # ======== USAGE ======== #
 # from app.core.config import get_settings
-# settings = get_settings
+# settings = get_settings()
 # VARABLE = settings.VARIABLE
