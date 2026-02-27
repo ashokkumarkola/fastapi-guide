@@ -18,10 +18,6 @@ from app.core.config import get_settings
 # from contextlib import asynccontextmanager
 # from app.db.async_db.async_session import init_db
 
-# Import models so SQLAlchemy registers them
-# import api.models
-from app import models
-
 settings = get_settings()
 
 # ======================== APP ======================== #
@@ -43,12 +39,7 @@ app = FastAPI(
 #     # register routers here later
 #     return app
 
-
 # app = create_app()
-
-# Create tables (dev only)
-# models.Base.metadata.create_all(bind=engine)
-# Base.metadata.create_all(bind=engine)
 
 # ======================= LIFESPAN ======================= #
 # ------------- on_event -------------

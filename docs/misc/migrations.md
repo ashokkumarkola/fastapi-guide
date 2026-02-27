@@ -144,6 +144,19 @@ git commit migration file         ← very important!
 deploy → same command runs on prod
 ```
 
+## Everyday Workflow
+
+```bash
+# Modify model
+age = Column(Integer)
+
+# Generate migration
+alembic revision --autogenerate -m "add age column"
+
+# Apply
+alembic upgrade head
+```
+
 ## Moderate / Standard Best Practices (2025–2026 style)
 
 ```

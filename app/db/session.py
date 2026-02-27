@@ -1,56 +1,61 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, declarative_base
 # from typing import Generator
-# from sqlalchemy.ext.asyncio import create_engine, session # create_async_engine, AsyncSession
+# from sqlalchemy.ext.asyncio import create_engine, session # create_async_engine, async_sessionmaker, AsyncSession
 
 from app.db.base import Base
 from app.core.logger import logger
 
+from app.core.config import get_settings
+settings = get_settings()
+
 # SQLALCHEMY_DATABASE_URL
-# DATABASE_URL = "sqlite:///./blog.db"
-# DATABASE_URL = "sqlite:///./data/blog.db"
-DATABASE_URL = "sqlite:///./database/fastapi_guide.db"
-# postgresql+psycopg2://user:password@localhost/db
+DATABASE_URL = settings.DATABASE_URL
 
-# database type/driver → username : password → database host → PostgreSQL port (default) → database name
-# DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/fastapi-demo'
-
+# ---- SYNC ---- #
 engine = create_engine(
     DATABASE_URL,
     # pool_size=20,
     # max_overflow=10,
     # pool_timeout=30,
-    connect_args={"check_same_thread": False},  # needed only for SQLite
-    echo=True
+    # pool_pre_ping=True, # Prevents stale connection errors in production.
+    # connect_args={"check_same_thread": False},  # SQLite only
+    # echo=True # Logs - settings.DEBUG
 )
 
-# ============ SESSION LOCAL ============ #
-SessionLocal = sessionmaker(
-    autocommit=False, # → DB not hit until commit() / flush()
-    autoflush=False,
-    bind=engine,
-)
-
-# AsyncSessionLocal = sessionmaker(
-#     engine,
-#     class_=AsyncSession,
-#     expire_on_commit=False
+# ---- ASYNC ---- #
+# engine = create_async_engine(
+#     DATABASE_URL,
+#     pool_size=10,
+#     max_overflow=20,
+#     pool_pre_ping=True,
 # )
 
-# ============ Declarative Base ============ #
-# ORM mapping layer → Legacy
-# Base = declarative_base() # Python classes ↔ Database tables.
-
-# SQLAlchemy 2.0 model
-# class Base(DeclarativeBase):
-    # pass
+# ============ SESSION LOCAL ============ #
+# ---- SYNC ---- #
+SessionLocal = sessionmaker( 
+    bind=engine,
+    # autocommit=False, # → DB not hit until commit() / flush() | deprecated - always False now
+    # autoflush=False, # special case
+    expire_on_commit=False # Objects remain usable after commit.
+)
+# ---- ASYNC ---- #
+# AsyncSessionLocal = async_sessionmaker(
+#     bind=engine,
+#     # class_=AsyncSession, # default
+#     expire_on_commit=False
+# )
 
 # ============ INIT DB ============ #
 def init_db():
     logger.info("Initializing database...")
-    Base.metadata.create_all(bind=engine)
+    
+    # Create tables (dev only)
+    Base.metadata.create_all(bind=engine) 
+    # models.Base.metadata.create_all(bind=engine)
 
 # ============ GET DB ============ #
+# ---- SYNC ---- #
 def get_db(): # -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
@@ -58,9 +63,10 @@ def get_db(): # -> Generator[Session, None, None]:
     finally:
         db.close()
 
+# ---- ASYNC ---- #
 # async def get_db():
-#     async with SessionLocal() as session:
-#         yield session
+#     async with AsyncSessionLocal() as db:
+#         yield db
 
 # ============ CONTEXT MANAGER ============ #
 # @contextmanager

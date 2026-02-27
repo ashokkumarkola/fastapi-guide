@@ -3,6 +3,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     """Application settings with environment variable support"""
+
     PROJECT_NAME: str = "My FastAPI Guide"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
@@ -12,17 +13,20 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # Database
-    DATABASE_URL: str = "sqlite:///./fastapi_guide.db"
-    ASYNC_DB_URL: str | None = None
+    DATABASE_URL: str
+    # ASYNC_DB_URL: str | None = None
     
     # Security
-    SECRET_KEY: str = "fastapi-guide-by-ashoka"
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    # SECRET_KEY: str = "fastapi-guide-by-ashoka"
+    # ALGORITHM: str = "HS256"
+    # ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    # REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # Environment
-    ENVIRONMENT: str = "development"
+    ENVIRONMENT: str = "dev"
+
+    # Sentry, Redis, etc.
+    # SENTRY_DSN: str | None = None
     
     # ---- Configuring models ---- #
     # Pydantic v1
@@ -34,9 +38,20 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
+        # env_ignore_empty=True, 
+        # extra="ignore"
     )
+
+# settings = Settings() # type: ignore
 
 @lru_cache()
 def get_settings():
     """Cached settings to avoid reading .env file repeatedly"""
     return Settings()
+
+# Declared in Settings but NOT in .env
+
+# ======== USAGE ======== #
+# from app.core.config import get_settings
+# settings = get_settings
+# VARABLE = settings.VARIABLE
