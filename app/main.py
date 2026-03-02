@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Header, status
 from contextlib import contextmanager, asynccontextmanager
+from fastapi.staticfiles import StaticFiles
 
 from app.db.session import engine, init_db
 from app.db.base import Base
 
-from app.routers.blog_router import router as blog_router
-from app.routers.user_router import router as user_router
-from app.routers.auth_router import router as auth_router
-from app.routers.item_router import router as item_router
+from app.routes.blog_router import router as blog_router
+from app.routes.user_router import router as user_router
+from app.routes.auth_router import router as auth_router
+from app.routes.item_router import router as item_router
 # from app.routers.books_router import router as book_router
 
 from app.core.middleware import RequestLoggingMiddleware
@@ -54,28 +55,30 @@ app = FastAPI(
 #     # print("App stopped")
 
 # ------------- asynccontextmanager -------------
-# @asynccontextmanager
-@contextmanager
-async def lifespan(app: FastAPI):
+# # @asynccontextmanager
+# @contextmanager
+# async def lifespan(app: FastAPI):
+#     logger.log
+#     # startup
+#     app.state.db = init_db() # connect()
+#     print("DB connected")
 
-    # startup
-    app.state.db = init_db() # connect()
-    print("DB connected")
+#     yield
 
-    yield
+#     # shutdown
+#     # app.state.db.close()
+#     print("DB closed")
 
-    # shutdown
-    # app.state.db.close()
-    print("DB closed")
-
+# ======================== STATIC FILES ======================== #
+# app.mount("uploads", StaticFiles(directory="/app/uploads"), name="uploads")
 
 # ======================= MIDDLEWARES ======================= #
 # app.add_middleware(RequestLoggingMiddleware)
 
 # ======================= APIs ======================= #
 @app.get("/")
-def read_root():
-    return {"message": "API running"}
+async def root():
+    return {"message": "Hello World!"}
 
 # @app.get("/home", tags=['Root'])
 # def read_root():

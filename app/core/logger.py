@@ -8,6 +8,8 @@ import logging
 
 # LOG_FILE = LOG_DIR / "app.log"
 
+from app.core.config import get_settings
+settings = get_settings()
 
 # ======================== Approach 1 Logger ======================== #
 # Function-based logger | Manual Python configuration.

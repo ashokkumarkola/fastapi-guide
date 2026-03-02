@@ -6,8 +6,14 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserQueryParams
 
+"""
+Responsibility
+    ONLY database operations.
+"""
+
 class UserDAO:
 
+    # -------- CREATE -------- #
     @staticmethod
     def create(db: Session, data: dict) -> User:
         user = User(**data)
@@ -15,6 +21,7 @@ class UserDAO:
         db.flush()
         return user
     
+    # -------- GET -------- #
     @staticmethod
     def get(db: Session, user_id: int) -> User | None:
         return (
@@ -37,7 +44,7 @@ class UserDAO:
             .first()
         )
     
-    # -------- LIST -------- #
+    # -------- GET LIST -------- #
     @staticmethod
     def list(db: Session):
         return db.query(User).all()
@@ -96,7 +103,8 @@ class UserDAO:
 
         # ---- filtering ----
         if params.email:
-            query = query.filter(User.email == params.email)
+            # query = query.filter(User.email == params.email)
+            query = query.filter(User.email.ilike(params.email))
 
         # ---- search ----
         if params.search:
@@ -140,10 +148,17 @@ class UserDAO:
         db.add(user) 
         db.commit() 
         db.refresh(user) 
-        return user
+        return None
 
     # -------- HARD DELETE -------- #
     @staticmethod
     def hard_delete(db: Session, user: User):
         db.delete(user)
         db.commit()
+
+    @staticmethod
+    def upload_profile_photo(db: Session, user: User):
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return None

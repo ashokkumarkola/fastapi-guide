@@ -21,9 +21,15 @@ class Settings(BaseSettings):
     # ALGORITHM: str = "HS256"
     # ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     # REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # Upload Files
+    BASE_UPLOAD_DIR: str = "uploads"
     
     # Environment
     ENVIRONMENT: str = "dev"
+
+    # Logs
+    # LOGS: bool = True
 
     # Sentry, Redis, etc.
     # SENTRY_DSN: str | None = None

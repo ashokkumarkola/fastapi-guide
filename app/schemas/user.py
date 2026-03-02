@@ -3,9 +3,10 @@ from typing import List, TYPE_CHECKING, Optional
 # from .Blog import BlogMain
 from datetime import datetime
 
-if TYPE_CHECKING:
-    from app.schemas.blog import Blog
+# if TYPE_CHECKING:
+#     from app.schemas.blog import Blog
 
+# -------- BASE SCHEMA -------- #
 class UserBase(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
@@ -14,26 +15,42 @@ class UserBase(BaseModel):
     # is_veirifed: str
     # created_at: datetime
     # updated_at: datetime
-
 class User(UserBase):
     class Config:
         from_attributes = True
 
+# -------- CREATE SCHEMA -------- #
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
 
+# -------- UPDATE SCHEMA -------- #
 class UserUpdate(UserBase):
     password: str = Field(min_length=6)
+    bio: Optional[str] = None
+    phone_number: Optional[str] = None
+    profile_photo: Optional[str] = None
+    is_active: Optional[bool] = None
 
+# -------- PARTIAL UPDATE SCHEMA -------- #
 class UserPartialUpdate(BaseModel):
     email: EmailStr | None= None
     username: str | None = None
     full_name: str | None = None
     password: str | None = None
+    phone_number: str | None = None
+    bio: str | None = None
 
+# -------- RESPONSE SCHEMA -------- #
 class UserResponse(UserBase):
     id: int
+    phone_number: str | None = None
+    bio: str | None = None
+    is_active: bool
+    is_verified: bool
+    is_superuser: bool
     created_at: datetime
+    updated_at: datetime | None = None
+    last_login: datetime | None = None
 
     # blogs: List[Blog] = []
     # blogs: List["Blog"] = []
@@ -51,6 +68,7 @@ class UserErrorResponse(BaseModel):
     message: str 
     error_code: str | None = None
 
+# -------- FILTER SCHEMA -------- #
 class UsersPaginated(BaseModel):
     total: int
     page: int
@@ -67,7 +85,7 @@ class UserQueryParams(BaseModel):
     sort_by: str = "id"
     order: str = "asc"
 
-# 
+# -------- AUTH SCHEMA -------- #
 class CurrentUser(UserResponse):
     is_superuser: bool
 
@@ -75,7 +93,7 @@ class Login(BaseModel):
     username: str
     password: str
 
-# 
+# -------- RESPONSE SCHEMA -------- #
 class BulkUserCreate(BaseModel):
     users: List[UserCreate]
 

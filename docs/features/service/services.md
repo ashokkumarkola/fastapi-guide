@@ -30,3 +30,22 @@ class ChapterDAO:
 | **Dependency Injection** | ❌ Pass session everywhere | ✅ Inject once, use everywhere            |
 | **Performance**          | ❌ New queries every call  | ✅ Can implement connection pooling       |
 | **Code Reuse**           | ❌ Duplicate session logic | ✅ Centralized session handling           |
+
+## DB BEGIN
+
+What db.begin() does
+with db.begin():
+
+means:
+
+✅ start transaction
+✅ auto commit if success
+✅ auto rollback if error
+
+Equivalent to:
+
+try:
+...
+db.commit()
+except:
+db.rollback()

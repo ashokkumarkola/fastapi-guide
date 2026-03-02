@@ -57,6 +57,8 @@ alembic        # migrations
 python-jose    # jwt
 passlib        # hashing
 bcrypt         # crypto
+pyjwt
+pwdlib[argon2]
 ```
 
 ---

@@ -11,7 +11,15 @@ router = APIRouter(
     tags=['Users']
 )
 
-# -------- ALL USERS -------- #
+"""
+Router Responsibility
+    Accept request
+    Validate input (Pydantic)
+    Call service
+    Return response
+"""
+
+# -------- GET ALL USERS -------- #
 @router.get("/all/", 
     status_code=status.HTTP_200_OK,
     response_model=list[UserResponse],
@@ -129,6 +137,15 @@ def hard_delete_user(
     db: Session = Depends(get_db),
 ):
     return UserService.hard_delete_user(db, user_id)
+
+# -------- UPLOAD PROFILE PHOTO -------- #
+# @router.post("/users/{user_id}/upload-photo")
+# def upload_profile_photo(
+#     user_id: int,
+#     file: UploadFile = File(...),
+#     db: Session = Depends(get_db),
+# ):
+#     return UserService.upload_profile_photo(db, user_id, file)
 
 # -------- BULK CREATE BY JSON UPLOAD -------- #
 @router.post("/bulk-upload", 

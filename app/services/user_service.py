@@ -4,6 +4,15 @@ from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserUpdate, UserPartialUpdate
 from app.daos.user_dao import UserDAO
 from app.utils.hashing import Hash
+# from app.utils.upload_profile_photo import save_upload_file
+
+"""
+Service Responsibility
+    Business rules
+    Data transformation
+    Transactions
+    Workflow orchestration
+"""
 
 class UserService:
 
@@ -51,7 +60,7 @@ class UserService:
                     detail="User not found",
                 )
             
-            updates = payload.model_dump()
+            updates = payload.model_dump(exclude_unset=True) # Removes unset/None fields
             if "password" in updates:
                 updates["password"] = Hash.bcrypt(
                     updates["password"]
@@ -67,46 +76,7 @@ class UserService:
                 return False
             UserDAO.delete(db, user)
             return True
-
-    @staticmethod
-    def bulk_create_users(db: Session, users: list[UserCreate]):
-
-        # Check duplicate emails in DB
-        emails = [u.email for u in users]
-
-        existing = UserDAO.verify_unique_email(db, emails)
-
-        if existing:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Emails already exist: {[e[0] for e in existing]}",
-            )
-
-        # Convert schema -> ORM model safely
-        user_objects = []
-
-        for user in users:
-            # user_data = user.dict()
-            user_data = user.model_dump()  # ✅ Pydantic v2
-            user_data["password"] = Hash.bcrypt(user.password)
-
-            user_objects.append(user_data)
-            # user_objects.append(User(**user_data)) # ✅ ORM object
-
-        # delegate persistence
-        return UserDAO.bulk_create(db, user_objects)
-
-    @staticmethod
-    def filter_users(db: Session, params):
-        total, users = UserDAO.filter_users(db, params)
-
-        return {
-            "total": total,
-            "page": params.page,
-            "size": params.size,
-            "users": users,
-        }
-    
+        
     # -------- SOFT DELETE -------- #
     @staticmethod
     def soft_delete_user(db: Session, user_id: int):
@@ -138,3 +108,63 @@ class UserService:
         UserDAO.hard_delete(db, user)
 
         return {"message": "User permanently deleted"}
+    
+    # -------- Upload Profile Photo -------- #
+    # @staticmethod
+    # def upload_profile_photo(db, user_id: int, file):
+
+    #     user = UserDAO.get_by_id(user_id)
+
+    #     if not user:
+    #         raise HTTPException(status_code=404, detail="User not found")
+
+    #     photo_url = save_upload_file(
+    #         file=file,
+    #         folder="profile_photos",
+    #         allowed_types=["image/jpeg", "image/png", "image/webp"],
+    #     )
+
+    #     user.profile_photo = photo_url
+    #     db.commit()
+    #     db.refresh(user)
+
+    #     return user
+
+    @staticmethod
+    def filter_users(db: Session, params):
+        total, users = UserDAO.filter_users(db, params)
+
+        return {
+            "total": total,
+            "page": params.page,
+            "size": params.size,
+            "users": users,
+        }
+    
+    @staticmethod
+    def bulk_create_users(db: Session, users: list[UserCreate]):
+
+        # Check duplicate emails in DB
+        emails = [u.email for u in users]
+
+        existing = UserDAO.verify_unique_email(db, emails)
+
+        if existing:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Emails already exist: {[e[0] for e in existing]}",
+            )
+
+        # Convert schema -> ORM model safely
+        user_objects = []
+
+        for user in users:
+            # user_data = user.dict()
+            user_data = user.model_dump()  # ✅ Pydantic v2
+            user_data["password"] = Hash.bcrypt(user.password)
+
+            user_objects.append(user_data)
+            # user_objects.append(User(**user_data)) # ✅ ORM object
+
+        # delegate persistence
+        return UserDAO.bulk_create(db, user_objects)
