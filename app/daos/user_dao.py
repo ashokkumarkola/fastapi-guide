@@ -6,16 +6,26 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserQueryParams
 
-"""
-Responsibility
-    ONLY database operations.
-"""
 
 class UserDAO:
 
     # -------- CREATE -------- #
     @staticmethod
     def create(db: Session, data: dict) -> User:
+        """
+            User(user_data.model_dump()) # returns a dictionary
+            User(**user_data.model_dump()) # Unpacks dict into keyword args
+            User.model_validate(user_data) # Direct validation
+
+            # extra keywords
+            UserInDB(**user_in.model_dump(), hashed_password=hashed_password)
+        """
+        # user = User(
+        #     email = data.email,
+        #     username = data.username,
+        #     password = data.password,
+        #     fullname = data.fullname
+        # )
         user = User(**data)
         db.add(user)
         db.flush()
@@ -42,6 +52,13 @@ class UserDAO:
             db.query(User)
             .filter(User.id == user_id, User.is_active == False)
             .first()
+        )
+    
+    @staticmethod
+    def get_by_email(db: Session, email: str) -> User | None:
+        return (
+            db.query(User)
+            .filter(User.email == email).first()
         )
     
     # -------- GET LIST -------- #

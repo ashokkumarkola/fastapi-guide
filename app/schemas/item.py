@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Header, Cookie, Query
-from pydantic import BaseModel, Field # HttpUrl, PhoneNuber, EmailStr
+from fastapi import FastAPI, Header, Cookie, Query, Form, UploadFile
+from pydantic import BaseModel, Field, HttpUrl, EmailStr, field_validator # PhoneNumber
 from typing import Annotated, List, Optional
 
+import phonenumbers
 from enum import Enum
 from uuid import UUID
+from decimal import Decimal
 from datetime import datetime, date, time, timedelta
 
 class Image(BaseModel):
@@ -122,3 +124,76 @@ class ItemFilter(BaseModel):
     # Automatic documentation
 
 
+class ItemFormData(BaseModel):
+    model_config = {"extra": "forbid"}
+
+    name: str
+    price: float
+
+# ---- FORM BASE ---- #
+class ItemFormBase(BaseModel):
+    name: str = Field(..., min_length=2, max_length=150)
+    description: str | None = Field(None, max_length=1000)
+    price: Decimal = Field(..., gt=0, decimal_places=2)
+    quantity: int = Field(..., ge=0)
+    category: str = Field(..., min_length=2, max_length=100)
+    image_url: HttpUrl | None = None
+    is_active: bool = True
+
+# ---- FORM CREATE ---- #
+class ItemFormCreateLegacy(ItemFormBase):
+
+    @classmethod
+    def from_form(
+        cls,
+        name: str = Form(...),
+        description: str | None = Form(None),
+        price: Decimal = Form(...),
+        quantity: int = Form(...),
+        category: str = Form(...),
+        image_url: str | None = Form(None),
+        is_active: bool = Form(True),
+    ):
+        return cls(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            category=category,
+            image_url=image_url,
+            is_active=is_active,
+        )
+
+class ItemFormCreate(ItemFormBase):
+    pass
+
+# 
+class ItemFormUpdate(BaseModel):
+    name: str | None = Field(None, min_length=2, max_length=150)
+    description: str | None = Field(None, max_length=1000)
+    price: Decimal | None = Field(None, gt=0, decimal_places=2)
+    quantity: int | None = Field(None, ge=0)
+    category: str | None = Field(None, min_length=2, max_length=100)
+    image_url: HttpUrl | None = None
+    is_active: bool | None = True
+
+# ---- FORM RESPONSE ---- #
+class ItemFormResponse(ItemFormBase):
+    model_config = {"from_attributes": True}
+
+    id: int
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+
+    # @field_validator('total_value', mode='before')
+    # @classmethod
+    # def compute_total_value(cls, v, values) -> Decimal:
+    #     price = values.data.get('price', 0)
+    #     quantity = values.data.get('quantity', 0)
+    #     return price * quantity
+
+
+# ---- ERROR RESPONSE ---- #
+class ErrorResponse(BaseModel):
+    detail: str

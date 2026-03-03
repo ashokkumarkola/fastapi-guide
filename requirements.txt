@@ -31,11 +31,20 @@ pydantic
 pydantic-settings
 # python-dotenv
 
+
+
 # --------------------------
 # Utilities
 # --------------------------
+# Forms
 # python-multipart
-# email-validator
+
+# Email Validation | EmailStr
+email-validator 
+pydantic[email]
+
+# Phone Number Validation
+phonenumbers
 
 # --------------------------
 # Development / Testing

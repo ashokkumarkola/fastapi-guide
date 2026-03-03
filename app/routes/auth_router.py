@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie # Path, Query, Cookie, Header
 from sqlalchemy.orm import Session
 
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, Login
+from app.schemas.token import Token
 from app.db.session import get_db
 from app.utils.hashing import Hash
 from app.utils.token import create_access_token
@@ -18,11 +19,68 @@ router = APIRouter(
 # @app.get('/')
 # def get_auth(db: Session, Depends=get_db)
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
-def register(body: UserCreate, db: Session = Depends(get_db)):
-    return AuthService.register_user(db, body)
+# REGISTER
+@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=Token)
+def register(data: UserCreate, db: Session = Depends(get_db)):
 
-@router.post('/login') # , response_model=UserResponse
+    access, refresh = AuthService.register(db, data)
+
+    return {
+        "access_token": access,
+        "refresh_token": refresh
+    }
+
+# LOGIN
+@router.post("/login", status_code=status.HTTP_200_OK, response_model=Token)
+def login(data: Login, response: Response, db: Session = Depends(get_db)): 
+    # ads_id: Annotated[str | None, Cookie()] = None # ads_id: str | None = Cookie(default=None)
+    # user_agent: Annotated[str | None, Header()] = None # user_agent: str | None = Header(default=None) # Header(convert_underscores=False)
+
+    access, refresh = AuthService.login(db, data)
+
+    # ---- Local Storage ----- #
+    # Store JWT in localStorage - XSS risk
+
+    # --- Set Cookie ---- #
+    response.set_cookie(
+        key="access_token",
+        value=access,
+        httponly=True, # JS cannot access cookie - Protects against XSS
+        secure=True, # Cookie sent only over HTTPS - Production MUST
+        samesite="lax" # Prevents CSRF attacks [strict | lax | None]
+    )
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh,
+        httponly=True,
+        secure=True,
+        samesite="lax"
+    ) 
+
+    return {
+        "access_token": access,
+        "refresh_token": refresh
+    }
+
+# REFRESH
+@router.post("/refresh")
+def refresh(token: str):
+    new_access = AuthService.refresh(token)
+    return {"access_token": new_access}
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return {"message": "User Logged out Successfully"}
+
+# @router.post("/me")
+# def get_current_user(access_token: str = Cookie(None)):
+#     payload = decode_token(access_token)
+    
+# 
+@router.post('/loginOAuth') # , response_model=UserResponse
 def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == request.username).first()
     if not user:

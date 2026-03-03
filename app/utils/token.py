@@ -31,6 +31,7 @@ def verify_token(token: str, credentials_exception):
         token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception
+        # raise HTTPException(status_code=401, detail="Invalid token")
     
     # user = get_user(fake_users_db, username=token_data.username)
     # if user is None:

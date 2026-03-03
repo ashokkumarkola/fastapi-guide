@@ -27,6 +27,11 @@ class UserService:
     @staticmethod
     def get_user(db: Session, user_id: int):
         return UserDAO.get(db, user_id)
+    
+    # -------- GET BY EMAIL -------- #
+    @staticmethod
+    def get_user_by_email(db: Session, email: str):
+        return UserDAO.get_by_email(db, email)
 
     # -------- GET LIST -------- #
     @staticmethod

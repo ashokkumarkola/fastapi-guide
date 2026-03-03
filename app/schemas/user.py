@@ -68,6 +68,10 @@ class UserErrorResponse(BaseModel):
     message: str 
     error_code: str | None = None
 
+# -------- CURRENT USER -------- #
+class CurrentUser(UserResponse):
+    is_superuser: bool
+
 # -------- FILTER SCHEMA -------- #
 class UsersPaginated(BaseModel):
     total: int
@@ -85,15 +89,7 @@ class UserQueryParams(BaseModel):
     sort_by: str = "id"
     order: str = "asc"
 
-# -------- AUTH SCHEMA -------- #
-class CurrentUser(UserResponse):
-    is_superuser: bool
-
-class Login(BaseModel):
-    username: str
-    password: str
-
-# -------- RESPONSE SCHEMA -------- #
+# -------- BULK RESPONSE SCHEMA -------- #
 class BulkUserCreate(BaseModel):
     users: List[UserCreate]
 
@@ -108,3 +104,9 @@ class BulkUserResponse(BaseModel):
 # model_rebuild resolves references
 # UserResponse.update_forward_refs()# Pydantic v1
 # UserResponse.model_rebuild() # Pydantic v2
+
+# -------- AUTH SCHEMA -------- #
+class Login(BaseModel):
+    email: str
+    password: str
+    

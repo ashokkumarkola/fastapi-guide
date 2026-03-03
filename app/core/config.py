@@ -33,6 +33,7 @@ class Settings(BaseSettings):
 
     # Sentry, Redis, etc.
     # SENTRY_DSN: str | None = None
+    # REDIS_URL: str = "redis://localhost:6379/0"
     
     # ---- Configuring models ---- #
     # Pydantic v1

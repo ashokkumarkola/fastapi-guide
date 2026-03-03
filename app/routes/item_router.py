@@ -1,16 +1,27 @@
-from fastapi import FastAPI, APIRouter, Response, status, Depends, HTTPException, Query
+from fastapi import FastAPI, APIRouter, Response, status, Depends, HTTPException, Query, Form, File, UploadFile
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
 from enum import Enum
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Union, Any
+from fastapi.encoders import jsonable_encoder
 
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.services.item_service import ItemService
 
-from app.schemas.item import ItemCreate, ItemUpdate, ItemResponse, ItemFilter
+from app.schemas.item import ( 
+    ItemCreate, 
+    ItemUpdate, 
+    ItemResponse, 
+    ItemFilter, 
+    ItemFormData,
+    ItemFormBase,
+    ItemFormCreate,
+    ItemFormResponse, 
+    ErrorResponse,
+)
 from app.db.session import get_db
 
 """
@@ -40,12 +51,17 @@ class Item(BaseModel):
     tax: float | None = None
     tags: set[str] = set()
 
-@router.get('/{item_id}', 
+@router.get('/guide/{item_id}', 
     # tags=['Items'], 
     deprecated=True
 
     # status_code=status.HTTP_200_OK,
-    # response_model=ItemResponse,
+
+    # Response Model
+    # response_model = dict[str, float] # arbitrary dict
+    # response_model = ItemResponse, 
+    # response_model=ItemResponse | OtherResponse # Union[PlaneItem, CarItem] 
+
     # response_model_exclude_unset=True,
     # responses={404: {'model': ErrorResponse}}
 
@@ -53,14 +69,43 @@ class Item(BaseModel):
     # description="Get an Item with all details", 
     # response_description="Item Details"
 )
-def get_item(item_id: int, response: Response, db: Session = Depends(get_db)) -> ItemResponse:
+def get_item(
+    item_id: int, 
+    response: Response, 
+
+    # ads_id: Annotated[str | None, Cookie()] = None # ads_id: str | None = Cookie(default=None)
+    # user_agent: Annotated[str | None, Header()] = None # user_agent: str | None = Header(default=None) # Header(convert_underscores=False)
+
+    teleport: bool = False,
+    db: Session = Depends(get_db)
+) -> ItemResponse: # Return Type
+    
+    # json_compatible_item_data = jsonable_encoder(item) # Pydantic model - JSON compatible version
     item = ItemService.get_item(db, item_id)
 
     # Custom headers
-    response.headers["X-Total-Count"] = str(len(item))
+    response.headers["X-Total-Count"] = str(len(item.name))
     response.headers["X-Custom-Meta"] = "Processed"  # Example
 
+    # Cookies
+    response.set_cookie(
+        key="access_token",
+        value="access_token_value",
+        httponly=True, # JS cannot access cookie - Protects against XSS
+        secure=True, # Cookie sent only over HTTPS - Production MUST
+        samesite="lax" # Prevents CSRF attacks [strict | lax | None]
+    )
+
+    # Redirect
+    # if teleport:
+    #     return RedirectResponse(url="https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    # return JSONResponse(content={"message": "Here's your interdimensional portal."})
+
     return item
+
+# application/json
+# application/x-www-form-urlencoded
+# multipart/form-data
 
 #  GET ITEM 
 @router.get('/{item_id}', status_code=status.HTTP_200_OK, response_model=ItemResponse)
@@ -81,7 +126,11 @@ def get_items(
     return ItemService.get_items(db)
 
 #  CREATE ITEM 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ItemResponse)
+@router.post("/", 
+    status_code=status.HTTP_201_CREATED, 
+    response_model=ItemResponse,
+    responses={409: {"model": ErrorResponse}}
+)
 async def create_item(item: ItemCreate, db: Session = Depends(get_db)): # -> ItemResponse:
     """
     Create an item with all the information:
@@ -192,6 +241,71 @@ async def read_elements():
     return [{"item_id": "Foo"}]
 
 
+# POST FORM DATA
+@router.post("/form-data/")
+async def read_form_data(data: Annotated[ItemFormData, Form()]): # data: ItemFormData = Form()
+    return data
+
+@router.post("/files/")
+async def create_file(
+    file: bytes = File(None), # v1
+    file2: Annotated[bytes, File()] = None, # v2
+    file3: Annotated[bytes, File(description="A file read as bytes")] = None,
+
+    # Multiple Files
+    files: Annotated[list[bytes], File()] = None
+): 
+    return {"file_size": len(file)}
+
+# POST UPLOAD FILE
+@router.post("/uploadfile/")
+async def create_upload_file(
+    # UploadFile - spooled file (memory < size_limit > disk)
+    file: UploadFile | None = None,
+    file2: Annotated[UploadFile, File(description="A file read as UploadFile")] = None,
+
+    # Multiple Files
+    files: list[UploadFile] = None
+): 
+    
+    # filename = file.filename
+    # file_content_type = file.content_type
+    # file_data = file.file
+
+    # file = await file.write(data)
+    # file_contents = await file.read(size)
+    # file_content = await file.seek(offset)
+
+    return {"filename": file.filename}
+
+
+
+
+@router.post("/files/")
+async def create_file(
+    file: Annotated[bytes, File()],
+    fileb: Annotated[UploadFile, File()],
+    token: Annotated[str, Form()],
+):
+    return {
+        "file_size": len(file),
+        "token": token,
+        "fileb_content_type": fileb.content_type,
+    }
+
+
+@router.post("/Form", 
+    status_code=status.HTTP_201_CREATED,
+    response_model=ItemFormResponse,
+    responses={409: {"model": ErrorResponse}}
+)
+def create_item(
+    # item: ItemFormCreate = Depends(ItemFormCreate.from_form), # Legacy Pydantic v1
+    item_in: Annotated[ItemFormCreate, Form()], # Modern Pydantic v2
+    db: Session = Depends(get_db),
+    # current_user = Depends(get_current_user)
+):
+    return ItemService.create_item(db, item_in)
 
 
 # @app.get("/portal")

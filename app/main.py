@@ -107,7 +107,7 @@ async def root():
 # ======================= ROUTES ======================= #
 app.include_router(blog_router)
 app.include_router(user_router)
-# app.include_router(auth_router)
+app.include_router(auth_router)
 app.include_router(item_router)
 # app.include_router(book_router, prefix=f"/api/{version}/books")
 
@@ -159,7 +159,7 @@ app.include_router(item_router)
 # app = create_application()
 
 # Debugging
-# if __name__ == '__main__':
+# if __name__ == '__main__': # Only execute when this file called
 #     uvicorn.run(
 #         app,
 #         host='127.0.0.1',
