@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Header, status
+from datetime import time
+
+from fastapi import FastAPI, Header, Request, status
 from contextlib import contextmanager, asynccontextmanager
 from fastapi.staticfiles import StaticFiles
 
@@ -11,10 +13,18 @@ from app.routes.auth_router import router as auth_router
 from app.routes.item_router import router as item_router
 # from app.routers.books_router import router as book_router
 
+# from app.routes import ( 
+#     blog_router, 
+#     user_router, 
+#     auth_router, 
+#     item_router 
+# )
+
 from app.core.middleware import RequestLoggingMiddleware
 from app.core.lifespan import lifespan
 from app.core.logger import logger
 from app.core.config import get_settings
+from app.middleware.cors import setup_cors
 
 # from contextlib import asynccontextmanager
 # from app.db.async_db.async_session import init_db
@@ -41,6 +51,9 @@ app = FastAPI(
 #     return app
 
 # app = create_app()
+
+# ======================== CORS ======================== #
+setup_cors(app)
 
 # ======================= LIFESPAN ======================= #
 # ------------- on_event -------------
@@ -70,10 +83,19 @@ app = FastAPI(
 #     print("DB closed")
 
 # ======================== STATIC FILES ======================== #
-# app.mount("uploads", StaticFiles(directory="/app/uploads"), name="uploads")
+# mount(path, app, name)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # ======================= MIDDLEWARES ======================= #
 # app.add_middleware(RequestLoggingMiddleware)
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    process_time = time.perf_counter() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 # ======================= APIs ======================= #
 @app.get("/")

@@ -46,6 +46,9 @@ SessionLocal = sessionmaker(
 #     expire_on_commit=False
 # )
 
+# def create_db_and_tables():
+#     SQLModel.metadata.create_all(engine)
+
 # ============ INIT DB ============ #
 def init_db():
     logger.info("Initializing database...")

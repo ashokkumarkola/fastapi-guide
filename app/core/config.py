@@ -49,6 +49,8 @@ class Settings(BaseSettings):
         # extra="ignore"
     )
 
+    ALLOWED_ORIGINS: list[str] = []
+
 # settings = Settings() # type: ignore
 
 @lru_cache()

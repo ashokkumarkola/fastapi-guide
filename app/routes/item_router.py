@@ -13,13 +13,10 @@ from app.services.item_service import ItemService
 
 from app.schemas.item import ( 
     ItemCreate, 
-    ItemUpdate, 
-    ItemResponse, 
+    ItemUpdate,  
     ItemFilter, 
-    ItemFormData,
-    ItemFormBase,
     ItemFormCreate,
-    ItemFormResponse, 
+    ItemResponse, 
     ErrorResponse,
 )
 from app.db.session import get_db
@@ -33,6 +30,18 @@ Cookie
 Body
 Form
 File
+
+
+Default Response:
+    DB Table → row data.
+    SQLAlchemy Model (Item) → ORM instance with attributes.
+    DAO → returns ORM instance.
+    Service → passes ORM instance (or raises exception).
+    Router → returns ORM instance.
+
+    - FastAPI → calls jsonable_encoder(serialize) → converts ORM instance into JSON-safe dict
+    - Starlette Response → sends JSON to client
+
 """
 
 router = APIRouter(
@@ -80,6 +89,10 @@ def get_item(
     db: Session = Depends(get_db)
 ) -> ItemResponse: # Return Type
     
+    """
+        Get Item Docs
+    """
+    
     # json_compatible_item_data = jsonable_encoder(item) # Pydantic model - JSON compatible version
     item = ItemService.get_item(db, item_id)
 
@@ -107,12 +120,17 @@ def get_item(
 # application/x-www-form-urlencoded
 # multipart/form-data
 
-#  GET ITEM 
+# ---- GET ITEM BY ID ---- #
 @router.get('/{item_id}', status_code=status.HTTP_200_OK, response_model=ItemResponse)
-def get_item(item_id: int, db: Session = Depends(get_db)) -> ItemResponse:
-    return ItemService.get_item(db, item_id)
+def get_item_by_id(item_id: int, db: Session = Depends(get_db)) -> ItemResponse:
+    return ItemService.get_item_by_id(db, item_id)
 
-#  LIST ITEMS 
+# ---- GET ITEM BY NAME ---- #
+@router.get('/name/{item_name}', status_code=status.HTTP_200_OK, response_model=ItemResponse)
+def get_item_by_name(item_name: str, db: Session = Depends(get_db)) -> ItemResponse:
+    return ItemService.get_item_by_name(db, item_name)
+
+# ---- LIST ITEMS ---- #
 @router.get('/', status_code=status.HTTP_200_OK, response_model=list[ItemResponse])
 def get_items(
     db: Session = Depends(get_db)
@@ -125,25 +143,47 @@ def get_items(
     """
     return ItemService.get_items(db)
 
-#  CREATE ITEM 
+# ---- CREATE ITEM ---- #
 @router.post("/", 
     status_code=status.HTTP_201_CREATED, 
     response_model=ItemResponse,
     responses={409: {"model": ErrorResponse}}
 )
-async def create_item(item: ItemCreate, db: Session = Depends(get_db)): # -> ItemResponse:
-    """
-    Create an item with all the information:
-
-    - **name**: each item must have a name
-    - **description**: a long description
-    - **price**: required
-    - **tax**: if the item doesn't have tax, you can omit this
-    - **tags**: a set of unique tag strings for this item
-    """
+async def create_item(item: ItemCreate, db: Session = Depends(get_db)) -> ItemResponse:
     return ItemService.create_item(db, item)
 
-#  UPDATE ITEM 
+# ---- CREATE ITEM WITH FORM DATA ---- #
+@router.post("/Form", 
+    status_code=status.HTTP_201_CREATED,
+    response_model=ItemResponse,
+    responses={409: {"model": ErrorResponse}}
+)
+async def create_item_with_form(
+    # item_in: ItemFormCreate = Depends(ItemFormCreate.from_form), # Legacy Pydantic v1
+
+    # image: Annotated[UploadFile, File()], # UploadFile | None = File(None), # File upload
+    # ✅ Annotated - to attach metadata  | combine type + dependency/constraint 
+    # item_in: ItemFormData = Form() # Modern Pydantic v2 - Non Annotated
+    item_in: Annotated[ItemCreate, Form()], # Modern Pydantic v2 - Annotated
+
+    db: Session = Depends(get_db),
+    # current_user = Depends(get_current_user)
+) -> ItemResponse:
+    return ItemService.create_item_with_form(db, item_in) # image
+
+# ---- UPLOAD ITEM IMAGE ---- #
+@router.post(
+    "/{item_id}/image",
+    status_code=status.HTTP_200_OK,
+)
+async def upload_item_image(
+    item_id: int,
+    image: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    return ItemService.upload_item_image(db, item_id, image)
+
+# ---- UPDATE ITEM ---- #
 @router.put("/", response_model=ItemResponse)
 async def update_item(item_id: int, updates: ItemUpdate, db: Session = Depends(get_db)):
     item = ItemService.update_item(db, item_id, updates)
@@ -154,7 +194,7 @@ async def update_item(item_id: int, updates: ItemUpdate, db: Session = Depends(g
         )
     return item
 
-#  UPDATE ITEM PARTIALLY 
+# ---- UPDATE ITEM PARTIALLY ---- #
 @router.patch("/", response_model=ItemResponse)
 async def update_item(item_id: int, updates: ItemUpdate, db: Session = Depends(get_db)):
     item = ItemService.update_item(db, item_id, updates)
@@ -165,18 +205,18 @@ async def update_item(item_id: int, updates: ItemUpdate, db: Session = Depends(g
         )
     return item
 
-#  DELETE ITEM 
-@router.delete("/", status_code=status.HTTP_404_NOT_FOUND)
-async def delete_item(item_id: int, db: Session = Depends(get_db)):
-    item = ItemService.delete_item(db, item_id)
-    if not item:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Item with id {item_id} not found"
-        )
-    return {"message": "Deleted"}
+# #  DELETE ITEM 
+# @router.delete("/", status_code=status.HTTP_404_NOT_FOUND)
+# async def delete_item(item_id: int, db: Session = Depends(get_db)):
+#     item = ItemService.delete_item(db, item_id)
+#     if not item:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail=f"Item with id {item_id} not found"
+#         )
+#     return {"message": "Deleted"}
 
-# SOFT DELETE ITEM
+# ---- SOFT DELETE ITEM ---- #
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT, deprecated=True)
 async def delete_item(item_id: int, db: Session = Depends(get_db)):
     item = ItemService.delete_item(db, item_id)
@@ -241,10 +281,9 @@ async def read_elements():
     return [{"item_id": "Foo"}]
 
 
-# POST FORM DATA
-@router.post("/form-data/")
-async def read_form_data(data: Annotated[ItemFormData, Form()]): # data: ItemFormData = Form()
-    return data
+
+
+# FILES
 
 @router.post("/files/")
 async def create_file(
@@ -293,19 +332,6 @@ async def create_file(
         "fileb_content_type": fileb.content_type,
     }
 
-
-@router.post("/Form", 
-    status_code=status.HTTP_201_CREATED,
-    response_model=ItemFormResponse,
-    responses={409: {"model": ErrorResponse}}
-)
-def create_item(
-    # item: ItemFormCreate = Depends(ItemFormCreate.from_form), # Legacy Pydantic v1
-    item_in: Annotated[ItemFormCreate, Form()], # Modern Pydantic v2
-    db: Session = Depends(get_db),
-    # current_user = Depends(get_current_user)
-):
-    return ItemService.create_item(db, item_in)
 
 
 # @app.get("/portal")

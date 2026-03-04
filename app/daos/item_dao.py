@@ -1,13 +1,12 @@
 from sqlalchemy.orm import Session
 from app.models.item import Item
-from app.schemas.item import (
+from app.schemas.item import ( 
     ItemCreate, 
-    ItemUpdate, 
+    ItemUpdate,  
+    ItemFilter, 
+    ItemFormCreate,
     ItemResponse, 
-    ItemFormBase, 
-    ItemFormCreate, 
-    ItemFormUpdate, 
-    ItemFormResponse
+    ErrorResponse,
 )
 from typing import List
 
@@ -17,16 +16,29 @@ class ItemDAO:
     """
     Data Access Object (DAO) pattern - SQLAlchemy specific operations
 
-    Responsibility
+    Responsibility:
         👉 ONLY database operations.
 
         ✅ DAO methods should only handle persistence (add, flush, refresh).
         ✅ They should not commit — leave commit/rollback to the service layer.
+
+        # -> Item - Return type: Model | database representation
+
+    DAO Returns:
+        - SQLAlchemy ORM model class Item
+        - <class 'app.models.item.Item'>
+        - ORM model → Pydantic schema → JSON response
     """
 
     @staticmethod
-    def create(db: Session, item_data: ItemFormCreate) -> Item:
+    def create(db: Session, item_data: ItemCreate) -> Item:
         item = Item(**item_data)
+
+        # Basic
+        # db.add(item)
+        # db.commit()
+        # db.refresh(item)
+
         db.add(item)
 
         db.flush() # Get ID if needed
@@ -38,7 +50,9 @@ class ItemDAO:
 
     @staticmethod
     def get_by_id(db: Session, item_id: int) -> Item | None:
-        return db.query(Item).filter(Item.id == item_id).first()
+        item = db.query(Item).filter(Item.id == item_id).first()
+        # print(f"DAO: get_by_id({item_id}) -> {type(item)} | {item} \n {item.__dict__}") # Debug
+        return item
     
     @staticmethod
     def get_by_name(db: Session, name: str) -> Item | None:
@@ -49,7 +63,15 @@ class ItemDAO:
         return db.query(Item).all()
 
     @staticmethod
-    def update(db: Session, item: Item, update_data: ItemFormUpdate) -> Item | None:
+    def save(db: Session, item: Item):
+        db.commit()
+        db.refresh(item)
+
+        # db.add(item)
+        # db.flush()
+
+    @staticmethod
+    def update(db: Session, item: Item, update_data: ItemUpdate) -> Item | None:
         # db.execute(update(Item).where(Item.id == item_id).values(**update_data))
         for key, value in update_data.items(): # dict(exclude_unset=True).
             setattr(item, key, value)
@@ -67,6 +89,10 @@ class ItemDAO:
     @staticmethod
     def delete(db: Session, item: Item):
         db.delete(item)
+
+        # Basic
+        # db.delete(item)
+        # db.commit()
 
     @staticmethod
     def filter(db: Session, filters: dict):

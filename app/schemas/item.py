@@ -16,20 +16,6 @@ class Image(BaseModel):
 
     name: str
 
-class CommonHeaders(BaseModel):
-    host: str
-    save_data: bool
-    if_modified_since: str | None = None
-    traceparent: str | None = None
-    x_tag: list[str] = []
-
-class Cookies(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    session_id: str
-    fatebook_tracker: str | None = None
-    googall_tracker: str | None = None
-
 class Item(BaseModel):
     title: str
     description: str | None = None
@@ -76,6 +62,8 @@ class Item(BaseModel):
 
     # PydanticUserError: "Config" and "model_config" cannot be used together
 
+# ---- ITEM BASE ---- #
+# without Validation
 class ItemBase(BaseModel):
     name: str
     description: str | None = None
@@ -88,29 +76,56 @@ class ItemBase(BaseModel):
     image_url: str | None = None
     # images: list[Image] | None = None
 
-class Offer(BaseModel):
-    name: str
-    description: str | None = None
-    price: float
-    items: list[ItemBase]
+# With Validation
+class ItemBase(BaseModel):
+    name: str = Field(..., min_length=2, max_length=150)
+    description: str | None = Field(None, max_length=1000)
+    price: Decimal = Field(..., gt=0, decimal_places=2)
+    quantity: int = Field(..., ge=0)
+    category: str = Field(..., min_length=2, max_length=100)
+    # image_url: str | None = None # HttpUrl
+    is_active: bool = True
 
+    # keep files outside Pydantic models | Pydantic models represent data structures, while files are transport-layer objects (UploadFile)
+    # image: UploadFile | None = None
+
+# ---- ITEM CREATE ---- #
 class ItemCreate(ItemBase):
-    pass
+    model_config = {"extra": "forbid"}
 
+# ---- ITEM UPDATE ---- #
+# Full Update
+class ItemFullUpdate(ItemBase):
+    model_config = {"extra": "forbid"}
+
+# Partial Update
 class ItemUpdate(BaseModel):
-    quantity: int | None = None
+    name: str | None = Field(None, min_length=2, max_length=150)
+    description: str | None = Field(None, max_length=1000)
+    price: Decimal | None = Field(None, gt=0, decimal_places=2)
+    quantity: int | None = Field(None, ge=0)
+    category: str | None = Field(None, min_length=2, max_length=100)
+    image_url: str | None = None # HttpUrl
+    is_active: bool | None = True
 
+# ---- ITEM RESPONSE ---- #
 class ItemResponse(ItemBase):
+    model_config = {"from_attributes": True}
+
     id: int
-    # owner_id: int
-    # image_url: str | None
-    class Config:
-        from_attributes = True  # For SQLAlchemy compatibility
+    image_url: str | None = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
 
-class ItemStats(BaseModel):
-    category: str
-    avg_price: float
+    # @field_validator('total_value', mode='before')
+    # @classmethod
+    # def compute_total_value(cls, v, values) -> Decimal:
+    #     price = values.data.get('price', 0)
+    #     quantity = values.data.get('quantity', 0)
+    #     return price * quantity
 
+# ---- ITEM FILTER ---- #
 class ItemFilter(BaseModel):
     pass
     # category: str | None = Query(None, description="Filter by category"),
@@ -123,25 +138,19 @@ class ItemFilter(BaseModel):
     # Data validation
     # Automatic documentation
 
+class ItemStats(BaseModel):
+    category: str
+    avg_price: float
 
-class ItemFormData(BaseModel):
-    model_config = {"extra": "forbid"}
-
+class Offer(BaseModel):
     name: str
+    description: str | None = None
     price: float
+    items: list[ItemBase]
 
-# ---- FORM BASE ---- #
-class ItemFormBase(BaseModel):
-    name: str = Field(..., min_length=2, max_length=150)
-    description: str | None = Field(None, max_length=1000)
-    price: Decimal = Field(..., gt=0, decimal_places=2)
-    quantity: int = Field(..., ge=0)
-    category: str = Field(..., min_length=2, max_length=100)
-    image_url: HttpUrl | None = None
-    is_active: bool = True
 
-# ---- FORM CREATE ---- #
-class ItemFormCreateLegacy(ItemFormBase):
+# ---- FORM CREATE LEGACY ---- #
+class ItemFormCreate(ItemBase):
 
     @classmethod
     def from_form(
@@ -163,36 +172,6 @@ class ItemFormCreateLegacy(ItemFormBase):
             image_url=image_url,
             is_active=is_active,
         )
-
-class ItemFormCreate(ItemFormBase):
-    pass
-
-# 
-class ItemFormUpdate(BaseModel):
-    name: str | None = Field(None, min_length=2, max_length=150)
-    description: str | None = Field(None, max_length=1000)
-    price: Decimal | None = Field(None, gt=0, decimal_places=2)
-    quantity: int | None = Field(None, ge=0)
-    category: str | None = Field(None, min_length=2, max_length=100)
-    image_url: HttpUrl | None = None
-    is_active: bool | None = True
-
-# ---- FORM RESPONSE ---- #
-class ItemFormResponse(ItemFormBase):
-    model_config = {"from_attributes": True}
-
-    id: int
-    is_active: bool
-    created_at: datetime
-    updated_at: datetime
-
-    # @field_validator('total_value', mode='before')
-    # @classmethod
-    # def compute_total_value(cls, v, values) -> Decimal:
-    #     price = values.data.get('price', 0)
-    #     quantity = values.data.get('quantity', 0)
-    #     return price * quantity
-
 
 # ---- ERROR RESPONSE ---- #
 class ErrorResponse(BaseModel):

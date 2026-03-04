@@ -1,16 +1,10 @@
 import time
 from fastapi import Request
-from fastapi.middleware.cors import CORSMiddleware
+
 from starlette.middleware.base import BaseHTTPMiddleware
+
 from http import HTTPStatus
 from app.core.logger import logger
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # Restrict in prod
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
 
 # # Custom:
 # @app.middleware("http")

@@ -13,4 +13,5 @@ venv/
 
 .DS_Store
 
-database
+database/
+uploads/
