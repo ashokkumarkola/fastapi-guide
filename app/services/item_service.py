@@ -16,6 +16,15 @@ from app.schemas.item import (
 
 UPLOAD_DIR = "uploads/items"
 
+
+"""
+Service Responsibility
+    Business rules
+    Data transformation
+    Transactions
+    Workflow orchestration
+"""
+
 class ItemService:
     """
     Item Service

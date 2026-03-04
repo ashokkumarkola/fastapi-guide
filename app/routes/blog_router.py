@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app.schemas.blog import BlogCreate, BlogUpdate, BlogResponse
-from app.schemas.user import User
+from app.schemas.user import UserBase
 from app.services.blog_service import BlogService
 from app.db.session import get_db
 from app.utils.oauth2 import get_current_user

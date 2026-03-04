@@ -1,47 +1,64 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import List, TYPE_CHECKING, Optional
-# from .Blog import BlogMain
 from datetime import datetime
-
-# if TYPE_CHECKING:
-#     from app.schemas.blog import Blog
+from app.utils.validations import validate_phone
 
 # -------- BASE SCHEMA -------- #
 class UserBase(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
     full_name: str | None = None
-    # is_active: bool | None = True
-    # is_veirifed: str
-    # created_at: datetime
-    # updated_at: datetime
-class User(UserBase):
-    class Config:
-        from_attributes = True
+
+    # phone_number: str | None = Field(None, pattern=r"^\+?[0-9]{10,15}$")
+    # @field_validator("phone_number")
+    # @classmethod
+    # def validate_phone(cls, value):
+    #     if value is None:
+    #         return value
+    #     if validate_phone(value):
+    #         return value
 
 # -------- CREATE SCHEMA -------- #
 class UserCreate(UserBase):
+    model_config = {"extra": "forbid"}
+
     password: str = Field(..., min_length=8)
 
 # -------- UPDATE SCHEMA -------- #
 class UserUpdate(UserBase):
-    password: str = Field(min_length=6)
-    bio: Optional[str] = None
-    phone_number: Optional[str] = None
-    profile_photo: Optional[str] = None
-    is_active: Optional[bool] = None
+    model_config = {"extra": "forbid"}
+
+    password: str = Field(..., min_length=8, max_length=128)
+    phone_number: str | None = None
+    bio: str | None = None
+    profile_photo: str | None = None
+    is_active: bool | None = None
 
 # -------- PARTIAL UPDATE SCHEMA -------- #
 class UserPartialUpdate(BaseModel):
+    model_config = {"extra": "forbid"}
+
     email: EmailStr | None= None
     username: str | None = None
     full_name: str | None = None
     password: str | None = None
     phone_number: str | None = None
     bio: str | None = None
+    profile_photo: str | None = None
+    is_active: bool | None = None
+
+    @field_validator("phone_number")
+    @classmethod
+    def validate_phone(cls, value):
+        if value is None:
+            return value
+        if validate_phone(value):
+            return value
 
 # -------- RESPONSE SCHEMA -------- #
 class UserResponse(UserBase):
+    model_config = {"from_attributes": True}
+
     id: int
     phone_number: str | None = None
     bio: str | None = None
@@ -52,16 +69,10 @@ class UserResponse(UserBase):
     updated_at: datetime | None = None
     last_login: datetime | None = None
 
-    # blogs: List[Blog] = []
-    # blogs: List["Blog"] = []
-
-    class Config:
-        from_attributes = True
-
 class UserSuccessResponse(BaseModel):
     success: bool = True
     message: str
-    data: UserResponse | None = None # Any
+    data: UserResponse | None = None
 
 class UserErrorResponse(BaseModel):    
     success: bool = False 
@@ -98,15 +109,7 @@ class BulkUserResponse(BaseModel):
     count: int
     users: List[UserResponse]
 
-# runtime import (important)
-# from api.schemas.blog import BlogResponse
-
-# model_rebuild resolves references
-# UserResponse.update_forward_refs()# Pydantic v1
-# UserResponse.model_rebuild() # Pydantic v2
-
 # -------- AUTH SCHEMA -------- #
 class Login(BaseModel):
     email: str
     password: str
-    

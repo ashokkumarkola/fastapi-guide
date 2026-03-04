@@ -8,6 +8,9 @@ from uuid import UUID
 from decimal import Decimal
 from datetime import datetime, date, time, timedelta
 
+# if TYPE_CHECKING:
+#     from app.schemas.blog import Blog
+
 class Image(BaseModel):
     # url: str
     
@@ -61,6 +64,11 @@ class Item(BaseModel):
     # }
 
     # PydanticUserError: "Config" and "model_config" cannot be used together
+
+# class Item(ItemBase):
+#     model_config = {"from_attributes": True}
+#     class Config:
+#         from_attributes = True
 
 # ---- ITEM BASE ---- #
 # without Validation
@@ -176,3 +184,15 @@ class ItemFormCreate(ItemBase):
 # ---- ERROR RESPONSE ---- #
 class ErrorResponse(BaseModel):
     detail: str
+
+
+    # blogs: List[Blog] = []
+    # blogs: List["Blog"] = []
+
+
+    # runtime import (important)
+# from api.schemas.blog import BlogResponse
+
+# model_rebuild resolves references
+# UserResponse.update_forward_refs()# Pydantic v1
+# UserResponse.model_rebuild() # Pydantic v2

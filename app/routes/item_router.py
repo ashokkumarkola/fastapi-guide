@@ -46,8 +46,18 @@ Default Response:
 
 router = APIRouter(
     prefix='/items',
-    tags=['Items']
+    tags=['Items'],
+
+    # include_in_schema=False # Controls whether the router appears in Swagger docs.
 )
+
+"""
+Router Responsibility
+    Accept request
+    Validate input (Pydantic)
+    Call service
+    Return response
+"""
 
 class Tags(Enum):
     items = "Items"

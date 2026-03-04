@@ -1,4 +1,3 @@
-
 from fastapi import HTTPException, status
 from sqlalchemy import asc, desc, or_
 from sqlalchemy.orm import Session
@@ -6,65 +5,57 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserQueryParams
 
+from app.schemas.user import (
+    UserCreate,
+    UserUpdate,
+)
 
 class UserDAO:
+    """User Data Access Object (DAO)"""
 
     # -------- CREATE -------- #
     @staticmethod
-    def create(db: Session, data: dict) -> User:
-        """
-            User(user_data.model_dump()) # returns a dictionary
-            User(**user_data.model_dump()) # Unpacks dict into keyword args
-            User.model_validate(user_data) # Direct validation
-
-            # extra keywords
-            UserInDB(**user_in.model_dump(), hashed_password=hashed_password)
-        """
-        # user = User(
-        #     email = data.email,
-        #     username = data.username,
-        #     password = data.password,
-        #     fullname = data.fullname
-        # )
-        user = User(**data)
+    def create(db: Session, user_data: UserCreate) -> User:
+        user = User(**user_data)
         db.add(user)
         db.flush()
         return user
     
-    # -------- GET -------- #
-    @staticmethod
-    def get(db: Session, user_id: int) -> User | None:
-        return (
-            db.query(User)
-            .filter(User.id == user_id).first()
-        )
-
+    # -------- GET BY ID -------- #
     @staticmethod
     def get_by_id(db: Session, user_id: int) -> User | None:
         return (
             db.query(User)
-            .filter(User.id == user_id).first()
-        )
-    
-    @staticmethod
-    def get_active_by_id(db: Session, user_id: int) -> User | None:
-        return ( 
-            db.query(User)
-            .filter(User.id == user_id, User.is_active == False)
+            .filter(User.id == user_id) # User.is_active == False
             .first()
         )
     
+    # -------- GET BY EMAIL -------- #
     @staticmethod
     def get_by_email(db: Session, email: str) -> User | None:
         return (
             db.query(User)
-            .filter(User.email == email).first()
+            .filter(User.email == email)
+            .first()
         )
     
-    # -------- GET LIST -------- #
+    # -------- GET BY USERNAME -------- #
     @staticmethod
-    def list(db: Session):
-        return db.query(User).all()
+    def get_by_username(db: Session, username: str) -> User | None:
+        return (
+            db.query(User)
+            .filter(User.username == username)
+            .first()
+        )
+    
+    # -------- GET BY FULLNAME -------- #
+    @staticmethod
+    def get_by_full_name(db: Session, full_name: str) -> User | None:
+        return (
+            db.query(User)
+            .filter(User.full_name.ilike(f"%{full_name}%"))
+            .first()
+        )
     
     # -------- FULL UPDATE -------- #
     @staticmethod
@@ -81,6 +72,11 @@ class UserDAO:
     #         setattr(user, key, value)
     #     db.flush()
     #     return user
+
+    # -------- GET LIST -------- #
+    @staticmethod
+    def list(db: Session):
+        return db.query(User).all()
     
     @staticmethod
     def delete(db: Session, user: User):

@@ -4,8 +4,12 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
+"""
+# SQLModel | table=True | Field()
+"""
+
 class Item(Base):
-    __tablename__ = "items"
+    __tablename__ = "items" 
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(100), nullable=False, unique=True, index=True) # title

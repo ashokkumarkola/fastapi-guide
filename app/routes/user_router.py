@@ -1,30 +1,35 @@
-from fastapi import APIRouter, Query, status, HTTPException, Depends, UploadFile, File
-from sqlalchemy.orm import Session
 import json
 
-from app.schemas.user import UserCreate, UserUpdate, UserPartialUpdate, UserResponse, BulkUserResponse, UserQueryParams, UserSuccessResponse, UserErrorResponse, UsersPaginated
+from fastapi import APIRouter, Query, status, HTTPException, Depends, UploadFile, File
+from sqlalchemy.orm import Session
+
+from app.schemas.user import (
+    UserCreate, 
+    UserUpdate, 
+    UserPartialUpdate, 
+    UserResponse, 
+    BulkUserResponse, 
+    UserQueryParams, 
+    UserSuccessResponse, 
+    UserErrorResponse, 
+    UsersPaginated,
+)    
 from app.services.user_service import UserService
+
 from app.db.session import get_db
 
 router = APIRouter(
     prefix='/users', 
-    tags=['Users']
+    tags=['Users'],
+    # dependencies=[Depends(get_current_user)],
 )
-
-"""
-Router Responsibility
-    Accept request
-    Validate input (Pydantic)
-    Call service
-    Return response
-"""
 
 # -------- GET ALL USERS -------- #
 @router.get("/all/", 
     status_code=status.HTTP_200_OK,
     response_model=list[UserResponse],
 )
-def get_users(db: Session = Depends(get_db)):
+def get_users(db: Session = Depends(get_db)) -> list[UserResponse]:
     return UserService.list_users(db)
 
 # -------- FILTER USERS -------- #
@@ -58,25 +63,40 @@ def list_users(
     status_code=status.HTTP_201_CREATED,
     response_model=UserResponse,
 )
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return UserService.create_user(db, user)
+def create_user(user_in: UserCreate, db: Session = Depends(get_db)) -> UserResponse:
+    return UserService.create_user(db, user_in)
 
 # -------- GET BY ID -------- #
 @router.get("/{user_id}", 
     status_code=status.HTTP_200_OK, 
     response_model=UserResponse,
 )
-def get_user(user_id: int, db: Session = Depends(get_db)):
-    user = UserService.get_user(db, user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"Blog with id {user_id} not found"
-        )
-    return user
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)) -> UserResponse:
+    return UserService.get_user_by_id(db, user_id)
 
 # -------- GET BY EMAIL -------- #
+@router.get("/email/{email}", 
+    status_code=status.HTTP_200_OK, 
+    response_model=UserResponse,
+)
+def get_user_by_email(email: str, db: Session = Depends(get_db)) -> UserResponse:
+    return UserService.get_user_by_email(db, email)
 
+# -------- GET BY USERNAME -------- #
+@router.get("/username/{username}", 
+    status_code=status.HTTP_200_OK, 
+    response_model=UserResponse,
+)
+def get_user_by_username(username: str, db: Session = Depends(get_db)) -> UserResponse:
+    return UserService.get_user_by_username(db, username)
+
+# -------- GET BY FULL NAME -------- #
+@router.get("/full-name/{full_name}", 
+    status_code=status.HTTP_200_OK, 
+    response_model=UserResponse,
+)
+def get_user_by_full_name(full_name: str, db: Session = Depends(get_db)) -> UserResponse:
+    return UserService.get_user_by_full_name(db, full_name)
 
 # -------- FULL UPDATE -------- #
 @router.put(

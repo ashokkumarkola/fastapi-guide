@@ -32,7 +32,23 @@ class ItemDAO:
 
     @staticmethod
     def create(db: Session, item_data: ItemCreate) -> Item:
+        """
+            User(user_data.model_dump()) # returns a dictionary
+            User(**user_data.model_dump()) # Unpacks dict into keyword args
+            User.model_validate(user_data) # Direct validation
+
+            # extra keywords
+            UserInDB(**user_in.model_dump(), hashed_password=hashed_password)
+        """
+                
         item = Item(**item_data)
+
+        # user = User(
+        #     email = data.email,
+        #     username = data.username,
+        #     password = data.password,
+        #     fullname = data.fullname
+        # )
 
         # Basic
         # db.add(item)
