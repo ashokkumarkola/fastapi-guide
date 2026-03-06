@@ -2,11 +2,13 @@ from pydantic import BaseModel
 
 class Token(BaseModel):
     access_token: str
-    refresh_token: str
+    refresh_token: str | None = None
     token_type: str = "bearer"
 
 class TokenData(BaseModel):
-    username: str | None = None
+    user_id: int | None = None
+    # username: str | None = None
+    # email: str | None = None
 
 class TokenPayload(BaseModel):
     sub: str | None = None # subject

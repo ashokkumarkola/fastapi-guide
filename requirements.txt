@@ -23,6 +23,10 @@ python-jose
 passlib
 bcrypt
 # bcrypt==4.0.1 # compatibility
+pyjwt
+# pyjwt[crypto]
+pwdlib
+# pwdlib[argon2]
 
 # --------------------------
 # Validation / Settings

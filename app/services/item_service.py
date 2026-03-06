@@ -132,7 +132,8 @@ class ItemService:
             if not item:
                 return None
             logger.info(f"Item updated: ID={item_id}")
-            return ItemDAO.update(db, item, updates.dict(exclude_none=True))
+            updates = updates.dict(exclude_none=True) # Removes unset/None fields
+            return ItemDAO.update(db, item, updates)
     
     @staticmethod
     def delete_item(db: Session, item_id: int):

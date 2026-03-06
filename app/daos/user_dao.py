@@ -8,6 +8,7 @@ from app.schemas.user import UserQueryParams
 from app.schemas.user import (
     UserCreate,
     UserUpdate,
+    UserPartialUpdate,
 )
 
 class UserDAO:
@@ -39,6 +40,10 @@ class UserDAO:
             .first()
         )
     
+    @staticmethod
+    def verify_unique_email(db: Session, emails):
+        return db.query(User.email).filter(User.email.in_(emails)).all()
+    
     # -------- GET BY USERNAME -------- #
     @staticmethod
     def get_by_username(db: Session, username: str) -> User | None:
@@ -59,56 +64,57 @@ class UserDAO:
     
     # -------- FULL UPDATE -------- #
     @staticmethod
-    def update(db: Session, user: User,  updates: dict) -> User:
+    def update(db: Session, user: User,  updates: UserUpdate) -> User:
         for key, value in updates.items():
             setattr(user, key, value)
         db.flush()
         return user
     
     # -------- PARTIAL UPDATE -------- #
+    @staticmethod
+    def partial_update(db: Session, user: User,  updates: UserPartialUpdate) -> User:
+        for key, value in updates.items():
+            setattr(user, key, value)
+        db.flush()
+        return user
+    
+    # -------- SOFT DELETE -------- #
+    @staticmethod
+    def soft_delete(db: Session, user: User):
+        # user.is_active= False 
+        user.is_deleted = True
+        # user.deleted_at = datetime.utcnow() 
+
+        db.add(user) 
+        db.commit() 
+        db.refresh(user) 
+        return None
+
+    # -------- HARD DELETE -------- #
+    @staticmethod
+    def hard_delete(db: Session, user: User):
+        db.delete(user)
+        db.commit()
+        return None
+    
     # @staticmethod
-    # def partial_update(db: Session, user: User,  updates: dict) -> User:
-    #     for key, value in updates.items():
-    #         setattr(user, key, value)
-    #     db.flush()
-    #     return user
+    # def delete(db: Session, user: User):
+    #     db.delete(user)
+
+    # -------- UPLOAD PROFILE PHOTO -------- #
+    @staticmethod
+    def upload_profile_photo(db: Session, user: User):
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return None
 
     # -------- GET LIST -------- #
     @staticmethod
     def list(db: Session):
         return db.query(User).all()
-    
-    @staticmethod
-    def delete(db: Session, user: User):
-        db.delete(user)
 
-    @staticmethod
-    def bulk_create(db: Session, users_data):
-        try:
-            # Create User objects from dictionaries
-            users = [User(**user_data) for user_data in users_data]
-            
-            # Add all users to session
-            db.add_all(users)
-            db.commit()
-
-            # Refresh all objects so IDs are available
-            for user in users:
-                db.refresh(user)
-
-            return users
-
-        except Exception as e:
-            db.rollback()
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error creating users: {str(e)}"
-            )
-
-    @staticmethod
-    def verify_unique_email(db: Session, emails):
-        return db.query(User.email).filter(User.email.in_(emails)).all()
-
+    # -------- FILTER -------- #
     @staticmethod
     def filter_users(db: Session, params: UserQueryParams):
 
@@ -150,28 +156,27 @@ class UserDAO:
         )
 
         return total, users
-
-    # -------- SOFT DELETE -------- #
+    
+    # -------- BULK CREATE -------- #
     @staticmethod
-    def soft_delete(db: Session, user: User):
-        user.is_active= False 
-        # user.is_deleted = True
-        # user.deleted_at = datetime.utcnow() 
+    def bulk_create(db: Session, users_data):
+        try:
+            # Create User objects from dictionaries
+            users = [User(**user_data) for user_data in users_data]
+            
+            # Add all users to session
+            db.add_all(users)
+            db.commit()
 
-        db.add(user) 
-        db.commit() 
-        db.refresh(user) 
-        return None
+            # Refresh all objects so IDs are available
+            for user in users:
+                db.refresh(user)
 
-    # -------- HARD DELETE -------- #
-    @staticmethod
-    def hard_delete(db: Session, user: User):
-        db.delete(user)
-        db.commit()
+            return users
 
-    @staticmethod
-    def upload_profile_photo(db: Session, user: User):
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-        return None
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error creating users: {str(e)}"
+            )

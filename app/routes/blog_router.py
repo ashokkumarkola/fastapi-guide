@@ -5,7 +5,7 @@ from app.schemas.blog import BlogCreate, BlogUpdate, BlogResponse
 from app.schemas.user import UserBase
 from app.services.blog_service import BlogService
 from app.db.session import get_db
-from app.utils.oauth2 import get_current_user
+# from app.utils.oauth2 import get_current_user
 from typing import List
 
 router = APIRouter(prefix="/blogs", tags=["Blogs"])

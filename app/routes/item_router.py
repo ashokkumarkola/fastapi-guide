@@ -402,3 +402,44 @@ async def create_file(
     # SQLAlchemy object is persisted in the database.
     # Returned object is serialized back into a Pydantic response schema.
     # Final output: JSON response sent to the client.
+
+
+"""
+
+PUT
+
+Replaces the entire resource
+
+The client sends the complete representation
+
+Missing fields are assumed removed or reset
+
+PUT is idempotent
+
+
+PATCH
+
+Partially modifies the resource
+
+The client sends only the fields to change
+
+PATCH may or may not be idempotent
+
+"""
+# Parse query params into UserQueryParams (otherwise treated as request body)
+    # page: int = Query(1, ge=1),
+    # size: int = Query(10, ge=1, le=100),
+    # search: str | None = None,
+    # email: str | None = None,
+    # sort_by: str = "id",
+    # order: str = "asc",
+
+
+    # params = UserQueryParams(
+    #     page=page,
+    #     size=size,
+    #     search=search,
+    #     email=email,
+    #     sort_by=sort_by,
+    #     order=order,
+    # )

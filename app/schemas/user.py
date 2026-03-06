@@ -52,8 +52,13 @@ class UserPartialUpdate(BaseModel):
     def validate_phone(cls, value):
         if value is None:
             return value
-        if validate_phone(value):
-            return value
+        if not validate_phone(value):
+            raise ValueError("Invalid phone number format")
+            # raise HTTPException(
+            #     status_code=status.HTTP_400_BAD_REQUEST,
+            #     detail="Invalid phone number format"
+            # )
+        return value
 
 # -------- RESPONSE SCHEMA -------- #
 class UserResponse(UserBase):

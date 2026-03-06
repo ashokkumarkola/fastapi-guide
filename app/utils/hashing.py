@@ -1,6 +1,7 @@
 import hashlib
 import base64
 from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
 pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

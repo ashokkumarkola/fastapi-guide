@@ -16,7 +16,7 @@ from app.schemas.user import (
 
 class UserService:
     """
-        User Service
+    User Service
     """
 
     # -------- CREATE -------- #
@@ -43,8 +43,12 @@ class UserService:
         user_data.password = Hash.bcrypt(user_data.password)
 
         try:
-            with db.begin():
-                return UserDAO.create(db, user_data.model_dump())
+            # with db.begin():
+            #     return UserDAO.create(db, user_data.model_dump())
+            user = UserDAO.create(db, user_data.model_dump())
+            db.commit()
+            db.refresh(user)
+            return user
 
         except IntegrityError as e:
             db.rollback()
@@ -101,7 +105,7 @@ class UserService:
 
     # -------- PUT (FULL UPDATE) -------- #
     @staticmethod
-    def update_user(db: Session, user_id: int, payload: UserUpdate):
+    def update_user(db: Session, user_id: int, updates: UserUpdate):
         with db.begin():
             user = UserDAO.get_by_id(db, user_id)
             if not user:
@@ -110,14 +114,17 @@ class UserService:
                     detail="User not found",
                 )
             
-            updates = payload.model_dump()
-            updates["password"] = Hash.bcrypt(payload.password)
+            print(f"Service: update_user() -> user={user} | updates={updates}") # Debug
+            updates_dict = updates.model_dump() # exclude_unset=True
 
-            return UserDAO.update(db, user, updates) # updates.dict(exclude_none=True)
+            if "password" in updates_dict and updates_dict["password"] is not None:
+                updates_dict["password"] = Hash.bcrypt(updates_dict["password"])
+
+            return UserDAO.update(db, user, updates_dict)
         
     # -------- PATCH (PARTIAL UPDATE) -------- #
     @staticmethod
-    def partial_update_user(db: Session, user_id: int, payload: UserPartialUpdate):
+    def partial_update_user(db: Session, user_id: int, updates: UserPartialUpdate):
         with db.begin():
             user = UserDAO.get_by_id(db, user_id)
             if not user:
@@ -126,14 +133,13 @@ class UserService:
                     detail="User not found",
                 )
             
-            updates = payload.model_dump(exclude_unset=True) # Removes unset/None fields
-            if "password" in updates:
-                updates["password"] = Hash.bcrypt(
-                    updates["password"]
-                )
+            print(f"Service: partial_update_user() -> user={user} | updates={updates}") # Debug
+            updates_dict = updates.model_dump(exclude_unset=True) 
+            if "password" in updates_dict:
+                updates_dict["password"] = Hash.bcrypt(updates_dict["password"])
 
-            return UserDAO.update(db, user, updates)
-        
+            return UserDAO.partial_update(db, user, updates_dict)
+
     @staticmethod
     def delete_user(db: Session, user_id: int):
         with db.begin():
@@ -147,7 +153,7 @@ class UserService:
     @staticmethod
     def soft_delete_user(db: Session, user_id: int):
 
-        user = UserDAO.get_active_by_id(db, user_id)
+        user = UserDAO.get_by_id(db, user_id)
 
         if not user:
             raise HTTPException(

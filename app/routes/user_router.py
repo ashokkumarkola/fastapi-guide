@@ -38,24 +38,9 @@ def get_users(db: Session = Depends(get_db)) -> list[UserResponse]:
     response_model=UsersPaginated,
 )
 def list_users(
-    # page: int = Query(1, ge=1),
-    # size: int = Query(10, ge=1, le=100),
-    # search: str | None = None,
-    # email: str | None = None,
-    # sort_by: str = "id",
-    # order: str = "asc",
-    params: UserQueryParams = Depends(), # Parse query params into UserQueryParams (otherwise treated as request body)
+    params: UserQueryParams = Depends(), 
     db: Session = Depends(get_db),
 ):
-    # params = UserQueryParams(
-    #     page=page,
-    #     size=size,
-    #     search=search,
-    #     email=email,
-    #     sort_by=sort_by,
-    #     order=order,
-    # )
-
     return UserService.filter_users(db, params)
 
 # -------- CREATE -------- #                   
@@ -106,14 +91,10 @@ def get_user_by_full_name(full_name: str, db: Session = Depends(get_db)) -> User
 )
 def update_user(
     user_id: int,
-    payload: UserUpdate,
+    updates_in: UserUpdate,
     db: Session = Depends(get_db),
 ):
-    """
-        * Replace entire resource
-        * Payload: all fields required
-    """
-    return UserService.update_user(db, user_id, payload)
+    return UserService.update_user(db, user_id, updates_in)
 
 # -------- PARTIAL UPDATE -------- #
 @router.patch(
@@ -123,14 +104,10 @@ def update_user(
 )
 def partial_update_user(
     user_id: int,
-    payload: UserPartialUpdate,
+    updates_in: UserPartialUpdate,
     db: Session = Depends(get_db),
 ):
-    """
-        * Modify selected fields
-        * Payload: optional fields
-    """
-    return UserService.partial_update_user(db, user_id, payload)
+    return UserService.partial_update_user(db, user_id, updates_in)
 
 # -------- SOFT DELETE -------- #
 @router.delete(

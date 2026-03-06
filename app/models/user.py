@@ -38,6 +38,6 @@ class User(Base):
 
     # TIMESTAMPS
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=True) # False
 
     last_login = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
