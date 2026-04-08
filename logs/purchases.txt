@@ -1,0 +1,2 @@
+User 10 bought item 12 - Order Id 123 
+User 20 bought item 120 - Order Id 123 

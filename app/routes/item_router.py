@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.services.item_service import ItemService
 
+
 from app.schemas.item import ( 
     ItemCreate, 
     ItemUpdate,  
@@ -20,6 +21,9 @@ from app.schemas.item import (
     ErrorResponse,
 )
 from app.db.session import get_db
+
+# from app.core.instrumentation import get_tracer, instrument_app
+# tracer = get_tracer(__name__)
 
 """
 Field
@@ -160,7 +164,8 @@ def get_items(
     responses={409: {"model": ErrorResponse}}
 )
 async def create_item(item: ItemCreate, db: Session = Depends(get_db)) -> ItemResponse:
-    return ItemService.create_item(db, item)
+    # return ItemService.create_item(db, item)
+    return ItemService.create_item_and_trace_manually(db, item)
 
 # ---- CREATE ITEM WITH FORM DATA ---- #
 @router.post("/Form", 

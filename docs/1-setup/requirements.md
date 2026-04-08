@@ -1,5 +1,13 @@
 # REQUIREMENTS
 
+## Freeze dependencies
+
+```bash
+pip freeze > requirements.txt
+```
+
+---
+
 ## Language
 
 ```

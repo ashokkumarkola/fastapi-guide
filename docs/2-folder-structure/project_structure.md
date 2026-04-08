@@ -208,6 +208,17 @@ Calculations
 
 ---
 
+## Tips
+
+```bash
+# Copy Folder structure to file
+tree > file_name
+
+tree -L <number>
+```
+
+---
+
 ## Reference
 
 zhanymkanov: fastapi-best-practices

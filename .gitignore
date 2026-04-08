@@ -1,17 +1,86 @@
-# python cache
-__pycache__/
-*.pyc
-
-# local databases
-*.db
-*.sqlite3
-
-# virtual env
-.venv/
-venv/
+# =========================
+# 🔐 ENV & SECRETS
+# =========================
 .env
+.env.*
+*.env
+*.key
+*.pem
+secrets.json
 
-.DS_Store
+# =========================
+# 🐍 PYTHON (FastAPI / LLM)
+# =========================
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
 
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Logs
+*.log
+
+# Temporary outputs
+outputs/
+generated/
+tmp/
 database/
 uploads/
+
+# =========================
+# 🗄 DATABASE
+# =========================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# =========================
+# 🐳 DOCKER
+# =========================
+docker-compose.override.yml
+*.pid
+
+# =========================
+# 🧪 IDE / EDITORS
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# =========================
+# 📦 MISC
+# =========================
+*.bak
+*.tmp
+*.temp
+
+# =========================
+# 🚀 OPTIONAL (UNCOMMENT IF NEEDED)
+# =========================
+# data/
+# notebooks/
+# *.ipynb_checkpoints

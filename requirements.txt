@@ -54,4 +54,12 @@ phonenumbers
 # Development / Testing
 # --------------------------
 # pytest
-# httpx
+httpx
+
+# --------------------------
+# Observability / Telemetry
+# --------------------------
+# opentelemetry-api
+# opentelemetry-sdk 
+# opentelemetry-exporter-console
+# opentelemetry-instrumentation-fastapi

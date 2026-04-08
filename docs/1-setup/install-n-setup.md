@@ -9,6 +9,8 @@ cd fastapi-guide
 
 # Virtual Environment
 
+- `isolated runtime environment`
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate

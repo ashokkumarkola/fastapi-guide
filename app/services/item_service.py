@@ -1,4 +1,5 @@
 from fastapi import HTTPException, UploadFile
+from opentelemetry.trace import StatusCode
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.daos.item_dao import ItemDAO
@@ -13,6 +14,9 @@ from app.schemas.item import (
     ItemResponse, 
     ErrorResponse,
 )
+
+from app.core.instrumentation import get_tracer, instrument_app
+tracer = get_tracer(__name__)
 
 UPLOAD_DIR = "uploads/items"
 
@@ -71,6 +75,23 @@ class ItemService:
         
         # with db.begin():
         #     return ItemDAO.create(db, item_data)
+
+    @ staticmethod
+    def create_item_and_trace_manually(db: Session, item_data) -> ItemResponse:
+        with tracer.start_as_current_span("item_creation_call") as span:
+            with db.begin(): 
+                item_data = item_data.model_dump(mode="json")
+                item = ItemDAO.create(db, item_data)
+                if not item:
+                    span.set_attribute("Item Created", False)
+                    raise HTTPException(status_code=409, detail="Item name already exists")
+                    # span.record_exception(e)
+                    # span.set_status(Status(StatusCode.ERROR))
+                span.set_attribute("Item Created", True)
+                span.set_attribute("item.id", item.id)
+                logger.info(f"Item created: ID={item.id}")
+                
+                return item
         
     @staticmethod
     def create_item_with_form(db: Session, item_data: ItemFormCreate, image: UploadFile) -> ItemResponse:
