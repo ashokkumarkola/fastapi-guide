@@ -1,3 +1,21 @@
+# TREE
+
+```bash
+tree
+tree -L 2
+
+tree -I "venv"
+
+tree -d
+tree -a
+tree -h
+tree -f
+
+tree > structure.txt
+```
+
+---
+
 .
 ├── alembic.ini
 ├── app

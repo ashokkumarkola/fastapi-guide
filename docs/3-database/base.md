@@ -14,7 +14,9 @@ class Base(DeclarativeBase): ...
 
 You now have:
 
+```
 ❌ multiple Base.metadata
 ❌ tables not visible to each other
 ❌ create_all() creates partial schemas
 ❌ Alembic migrations break
+```

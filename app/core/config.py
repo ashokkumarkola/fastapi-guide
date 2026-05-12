@@ -74,9 +74,12 @@ def get_settings():
     """Cached settings to avoid reading .env file repeatedly"""
     return Settings()
 
-# Declared in Settings but NOT in .env
 
 # ======== USAGE ======== #
 # from app.core.config import get_settings
 # settings = get_settings()
 # VARABLE = settings.VARIABLE
+
+
+# ======== DEBUG ======== #
+# Declared in Settings but NOT in .env
