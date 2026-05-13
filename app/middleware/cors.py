@@ -1,5 +1,5 @@
 import os
-from app.core.config import get_settings
+from app.core.config.config import get_settings
 from fastapi.middleware.cors import CORSMiddleware
 
 settings = get_settings()

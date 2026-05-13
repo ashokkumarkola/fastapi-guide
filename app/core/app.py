@@ -12,7 +12,7 @@ from app.routes import (
     purchase_router
 )
 
-from app.core.config import get_settings
+from app.core.config.config import get_settings
 from app.core.lifespan import lifespan
 from app.middleware.cors import setup_cors
 # from app.core.instrumentation import instrument_app

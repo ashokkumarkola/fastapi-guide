@@ -1,3 +1,5 @@
+# Single class config
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 from pydantic import validator, field_validator, AnyHttpUrl

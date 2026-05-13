@@ -17,7 +17,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-from app.core.config import get_settings
+from app.core.config.config import get_settings
 settings = get_settings()
 config.set_main_option("sqlalchemy.url", str(settings.DATABASE_URL))
 

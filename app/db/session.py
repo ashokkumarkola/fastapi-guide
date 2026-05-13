@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from app.db.base import Base
 from app.core.logger import logger
 
-from app.core.config import get_settings
+from app.core.config.config import get_settings
 settings = get_settings()
 
 # SQLALCHEMY_DATABASE_URL

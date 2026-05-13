@@ -10,7 +10,7 @@ import jwt  # PyJWT (recommended)
 from jose import JWTError  # Fallback if needed; remove for pure PyJWT
 from jwt.exceptions import InvalidTokenError  # PyJWT errors
 
-from app.core.config import get_settings
+from app.core.config.config import get_settings
 
 settings = get_settings()
 

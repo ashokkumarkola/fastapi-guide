@@ -16,7 +16,7 @@ from app.routes import (
 from app.core.middleware import RequestLoggingMiddleware
 from app.core.lifespan import lifespan
 from app.core.logger import logger
-from app.core.config import get_settings
+from app.core.config.config import get_settings
 from app.core.instrumentation import instrument_app
 from app.middleware.cors import setup_cors
 
