@@ -24,11 +24,11 @@ def create_app() -> FastAPI:
     app = FastAPI(
         lifespan=lifespan,
 
-        title=settings.PROJECT_NAME,
+        title=settings.APP_NAME,
         description="A Complete Guide on FastAPI",
         # summary="A Complete Guide on FastAPI by Ashoka",
-        version=settings.VERSION,
-        
+        version=settings.APP_VERSION,
+
         # openapi_url=f"{settings.API_V1_STR}/openapi.json",
         # docs_url="/docs" if settings.ENVIRONMENT == "development" else None,
         # redoc_url="/redoc" if settings.ENVIRONMENT == "development" else None,
@@ -84,8 +84,8 @@ def register_routes(app: FastAPI):
     @app.get("/")
     async def root():
         return {
-            "message": f"Welcome to {settings.PROJECT_NAME}",
-            "version": settings.VERSION,
+            "message": f"Welcome to {settings.APP_NAME}",
+            "version": settings.APP_VERSION,
             "docs": "/docs",
             "environment": settings.ENVIRONMENT
         }

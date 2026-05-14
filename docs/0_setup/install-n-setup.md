@@ -22,13 +22,13 @@ cd fastapi-guide
 
 ```bash
 # Create venv
-python3 -m venv venv
+python3 -m venv .venv
 
 # Activate (Linux/macOS)
-source venv/bin/activate
+source .venv/bin/activate
 
 # Activate (Windows CMD)
-venv\Scripts\activate
+.venv\Scripts\activate
 
 # Activate (PowerShell)
 .\venv\Scripts\Activate.ps1
@@ -68,7 +68,7 @@ __pycache__/
 *.pyc
 
 # Virtual env
-venv/
+.venv/
 
 # Environment
 .env
@@ -95,14 +95,8 @@ pip install --upgrade pip
 ```bash
 # FastAPI + Uvicorn
 pip install fastapi uvicorn
-```
 
----
-
-## Recommended Setup
-
-```bash
-# Full featured install
+# Recommended Setup Full featured install
 pip install "fastapi[standard]" "uvicorn[standard]"
 ```
 
@@ -279,7 +273,7 @@ uvicorn --version
 fastapi-guide/
 ├── app/
 ├── tests/
-├── venv/
+├── .venv/
 ├── .env
 ├── .gitignore
 ├── requirements.txt

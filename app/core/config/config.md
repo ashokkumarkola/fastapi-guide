@@ -212,7 +212,17 @@ settings = get_settings()
 
 ---
 
-# Production Evolution Path
+## USAGE
+
+```bash
+from app.core.config import get_settings
+settings = get_settings()
+VARABLE = settings.VARIABLE
+```
+
+---
+
+## Production Evolution Path
 
 ```text id="dh2dyo"
 Docker env vars

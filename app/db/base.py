@@ -6,16 +6,23 @@ All models must inherit SAME Base
 Engine.create_all() uses Base.metadata
 """
 
+
+# =========================================================
+# DECLARATIVE BASE
+# =========================================================
+
+# ======== ORM mapping layer → Legacy ======== #
+# Base = declarative_base() # Python classes ↔ Database tables.
+
+# ======== SQLAlchemy 2.0 model ======== #
+class Base(DeclarativeBase):
+    pass
+
+
+# #########################################################
+
 # Model file not imported
 #    = class not executed
 #    = table not registered
 #    = metadata empty
 #    = Alembic panic
-
-# ============ Declarative Base ============ #
-# ORM mapping layer → Legacy
-# Base = declarative_base() # Python classes ↔ Database tables.
-
-# SQLAlchemy 2.0 model
-class Base(DeclarativeBase):
-    pass

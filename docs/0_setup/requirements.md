@@ -3,7 +3,11 @@
 ## Freeze dependencies
 
 ```bash
+# Generate requirements.txt
 pip freeze > requirements.txt
+
+# Install from requirements.txt
+pip install -r requirements.txt
 ```
 
 ---
@@ -28,7 +32,7 @@ PyCharm
 ## System executable
 
 ```bash
-sqlite3        # local-db
+sqlite3        # local sql database cli
 ```
 
 ---
@@ -36,7 +40,7 @@ sqlite3        # local-db
 ## Core Framework
 
 ```bash
-fastapi        # api
+fastapi        # async api framework, validation, dependency injection, openapi/docs
 ```
 
 ---
@@ -44,7 +48,7 @@ fastapi        # api
 ## Server
 
 ```bash
-uvicorn        # server
+uvicorn        # asgi server, hot reload, production serving
 ```
 
 ---
@@ -52,9 +56,9 @@ uvicorn        # server
 ## Database
 
 ```bash
-sqlalchemy     # orm
-asyncpg        # postgres
-alembic        # migrations
+sqlalchemy     # orm, models, queries, db abstraction
+asyncpg        # async postgres driver
+alembic        # schema migrations, versioning
 ```
 
 ---
@@ -62,11 +66,11 @@ alembic        # migrations
 ## Authentication / Security
 
 ```bash
-python-jose    # jwt
-passlib        # hashing
-bcrypt         # crypto
-pyjwt
-pwdlib[argon2]
+python-jose    # jwt, jws, token signing/verification
+passlib        # password hashing abstraction
+bcrypt         # password hashing algorithm
+pyjwt          # jwt encode/decode
+pwdlib[argon2] # argon2 password hashing
 ```
 
 ---
@@ -74,9 +78,9 @@ pwdlib[argon2]
 ## Validation / Settings
 
 ```bash
-pydantic           # validation
-pydantic-settings  # config
-python-dotenv      # env
+pydantic           # validation, serialization, parsing, typed schemas
+pydantic-settings  # typed config/envs, validation, parsing, centralized settings, .env support
+python-dotenv      # .env loading, env management
 ```
 
 ---
@@ -84,8 +88,8 @@ python-dotenv      # env
 ## Utilities
 
 ```bash
-python-multipart   # forms
-email-validator    # email
+python-multipart   # form-data, file uploads
+email-validator    # email syntax/domain validation
 ```
 
 ---
@@ -93,32 +97,36 @@ email-validator    # email
 ## Development / Testing
 
 ```bash
-pytest        # testing
-httpx         # client
+pytest             # testing framework, assertions, fixtures
+httpx              # async/sync http client, api testing
 ```
 
 ---
 
 ## API Testing Tools
 
-Postman
-Swagger
-Insomnia
+```text
+Postman    # api testing, collections, automation
+Swagger    # openapi ui, api docs/testing
+Insomnia   # api client/testing
+```
 
 ---
 
 ## Database Tools
 
-PostgreSQL
-SQLite
+```text
+PostgreSQL   # production relational database
+SQLite       # embedded local database
+```
 
 ---
 
 ## FastAPI Docs Access
 
 ```bash
-/docs
-/redoc
+/docs        # swagger ui
+/redoc       # redoc documentation ui
 ```
 
 ---
